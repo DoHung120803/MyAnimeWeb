@@ -1,10 +1,14 @@
-
 server:
   port: 8080
   servlet:
     context-path: /myanime
+
 spring:
   datasource:
-    url: "jbdc:mysql://localhost:3306/my_anime"
-
-
+    url: "jdbc:mysql://localhost:3306/my_anime"
+    username: "root"
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
