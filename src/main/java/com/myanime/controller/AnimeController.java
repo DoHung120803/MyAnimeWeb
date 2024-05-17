@@ -26,13 +26,14 @@ public class AnimeController {
         return animeService.getAnimes();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/animes/{id}")
     public Anime getAnime(@PathVariable("id") String id) {
         return animeService.getAnime(id);
     }
 
-    @PutMapping("/{id}")
-    public Anime updateAnime(@PathVariable String id,@RequestBody AnimeUpdateRequest request) {
+    @PutMapping("/animes/update/{id}")
+    public Anime updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
+        System.out.println(id);
         return animeService.updateAnime(id, request);
     }
 
