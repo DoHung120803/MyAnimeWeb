@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/*
+*enable your Spring Boot application to handle CORS requests from your frontend application
+*running on http://localhost:3000
+*/
+
 @Configuration
 public class WebConfig {
 
