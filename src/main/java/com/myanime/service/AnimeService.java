@@ -19,9 +19,9 @@ public class AnimeService implements AnimeServiceInterface {
         Anime anime = new Anime();
 
         anime.setName(request.getName());
-        anime.setRate(request.getRate());
+        anime.setRate(9.0);
         anime.setDescription(request.getDescription());
-        anime.setViews(request.getViews());
+        anime.setViews(1000);
         anime.setIframe(request.getIframe());
         anime.setThumbnailUrl(request.getThumbnailUrl());
 

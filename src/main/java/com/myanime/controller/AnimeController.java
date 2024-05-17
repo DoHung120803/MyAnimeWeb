@@ -10,19 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/animes")
 public class AnimeController {
     @Autowired
     private AnimeServiceInterface animeService;
 
     // add anime into db
-    @PostMapping()
-    public Anime createAnime(@RequestBody AnimeCreationRequest request) {
+    @PostMapping("/upload/store")
+    public Anime createAnime(@ModelAttribute AnimeCreationRequest request) {
         return animeService.createAnime(request);
     }
 
     // get all anime
-    @GetMapping()
+    @GetMapping("/animes")
     public List<Anime> getAnimes() {
         return animeService.getAnimes();
     }
