@@ -31,7 +31,7 @@ public class WebConfig {
         };
     }
 
-    // Configure so spring boot can process forms with _method=put/delete
+    // Configure so spring boot can process hidden html forms with _method=put/delete
     // <form method="post" ...>
     //  <input type="hidden" name="_method" value="put" />
     //...
