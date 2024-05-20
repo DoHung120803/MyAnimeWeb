@@ -12,4 +12,5 @@ public interface AnimeServiceInterface {
     Anime getAnime(String id);
     Anime updateAnime(String id, AnimeUpdateRequest request);
     void deleteAnime(String id);
+    List<Anime> findAnimeByName(String name);
 }

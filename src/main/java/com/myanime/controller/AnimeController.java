@@ -10,34 +10,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/animes")
 public class AnimeController {
     @Autowired
     private AnimeServiceInterface animeService;
 
     // add anime into db
-    @PostMapping()
-    public Anime createAnime(@RequestBody AnimeCreationRequest request) {
+    @PostMapping("/upload/store")
+    public Anime createAnime(@ModelAttribute AnimeCreationRequest request) {
         return animeService.createAnime(request);
     }
 
     // get all anime
-    @GetMapping()
+    @GetMapping("/animes")
     public List<Anime> getAnimes() {
         return animeService.getAnimes();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/animes/{id}")
     public Anime getAnime(@PathVariable("id") String id) {
         return animeService.getAnime(id);
     }
 
-    @PutMapping("/{id}")
-    public Anime updateAnime(@PathVariable String id,@RequestBody AnimeUpdateRequest request) {
+    @GetMapping("/animes/search")
+    public List<Anime> findAnimesByName(@RequestParam String name) {
+        return animeService.findAnimeByName(name);
+    }
+
+    @PutMapping("/animes/update/{id}")
+    public Anime updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
+        System.out.println(id);
         return animeService.updateAnime(id, request);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/animes/delete/{id}")
     public void deleteAnime(@PathVariable String id) {
         animeService.deleteAnime(id);
     }

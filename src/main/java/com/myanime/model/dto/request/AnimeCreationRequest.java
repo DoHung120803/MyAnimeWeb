@@ -10,11 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnimeCreationRequest {
-    private String id;
     private String name;
     private String description;
-    private double rate;
-    private long views;
     private String iframe;
     private String thumbnailUrl;
 }
