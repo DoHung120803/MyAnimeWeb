@@ -53,4 +53,8 @@ public class AnimeService implements AnimeServiceInterface {
     public void deleteAnime(String id) {
         animeRepository.deleteById(id);
     }
+
+    public List<Anime> findAnimeByName(String name) {
+        return animeRepository.findByNameContaining(name);
+    }
 }
