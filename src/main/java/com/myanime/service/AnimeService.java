@@ -4,6 +4,7 @@ import com.myanime.entity.Anime;
 import com.myanime.model.dto.request.AnimeCreationRequest;
 import com.myanime.model.dto.request.AnimeUpdateRequest;
 import com.myanime.repository.AnimeRepository;
+import com.myanime.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,9 @@ public class AnimeService implements AnimeServiceInterface {
         Anime anime = new Anime();
 
         anime.setName(request.getName());
-        anime.setRate(9.0);
+        anime.setRate(RandomUtils.randomRate());
         anime.setDescription(request.getDescription());
-        anime.setViews(1000);
+        anime.setViews(RandomUtils.randomViews());
         anime.setIframe(request.getIframe());
         anime.setThumbnailUrl(request.getThumbnailUrl());
 
@@ -56,5 +57,10 @@ public class AnimeService implements AnimeServiceInterface {
 
     public List<Anime> findAnimeByName(String name) {
         return animeRepository.findByNameContaining(name);
+    }
+
+    @Override
+    public List<Anime> getTopViewsAnimes() {
+        return animeRepository.findTop10ByOrderByViewsDesc();
     }
 }

@@ -31,6 +31,11 @@ public class AnimeController {
         return animeService.getAnime(id);
     }
 
+    @GetMapping("/animes/top-views")
+    public List<Anime> getHighestViewsAnimes() {
+        return animeService.getTopViewsAnimes();
+    }
+
     @GetMapping("/animes/search")
     public List<Anime> findAnimesByName(@RequestParam String name) {
         return animeService.findAnimeByName(name);
@@ -38,7 +43,6 @@ public class AnimeController {
 
     @PutMapping("/animes/update/{id}")
     public Anime updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
-        System.out.println(id);
         return animeService.updateAnime(id, request);
     }
 

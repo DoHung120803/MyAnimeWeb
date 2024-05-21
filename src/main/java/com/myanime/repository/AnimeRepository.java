@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface AnimeRepository extends JpaRepository<Anime, String> {
     List<Anime> findByNameContaining(String name); // where name like '%name%'
+
+    List<Anime> findTop10ByOrderByViewsDesc(); // top 10 animes have highest views
 }
