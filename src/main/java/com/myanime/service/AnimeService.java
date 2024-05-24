@@ -63,4 +63,9 @@ public class AnimeService implements AnimeServiceInterface {
     public List<Anime> getTopViewsAnimes() {
         return animeRepository.findTop10ByOrderByViewsDesc();
     }
+
+    @Override
+    public List<Anime> getTopRateAnimes() {
+        return animeRepository.findTop10ByOrderByRateDesc();
+    }
 }

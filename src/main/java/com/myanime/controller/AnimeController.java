@@ -36,6 +36,11 @@ public class AnimeController {
         return animeService.getTopViewsAnimes();
     }
 
+    @GetMapping("/animes/top-rate")
+    public List<Anime> getHighestRateAnimes() {
+        return animeService.getTopRateAnimes();
+    }
+
     @GetMapping("/animes/search")
     public List<Anime> findAnimesByName(@RequestParam String name) {
         return animeService.findAnimeByName(name);

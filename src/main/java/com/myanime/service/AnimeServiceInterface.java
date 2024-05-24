@@ -14,4 +14,6 @@ public interface AnimeServiceInterface {
     void deleteAnime(String id);
     List<Anime> findAnimeByName(String name);
     List<Anime> getTopViewsAnimes();
+    List<Anime> getTopRateAnimes();
+
 }
