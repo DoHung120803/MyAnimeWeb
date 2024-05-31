@@ -3,7 +3,9 @@ package com.myanime.controller;
 import com.myanime.entity.Anime;
 import com.myanime.model.dto.request.AnimeCreationRequest;
 import com.myanime.model.dto.request.AnimeUpdateRequest;
+import com.myanime.model.dto.request.ApiResponse;
 import com.myanime.service.AnimeServiceInterface;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,39 +18,55 @@ public class AnimeController {
 
     // add anime into db
     @PostMapping("/upload/store")
-    public Anime createAnime(@ModelAttribute AnimeCreationRequest request) {
-        return animeService.createAnime(request);
+    public ApiResponse<Anime> createAnime(@ModelAttribute @Valid AnimeCreationRequest request) {
+        ApiResponse<Anime> apiResponse = new ApiResponse<>();
+
+        apiResponse.setData(animeService.createAnime(request));
+
+        return apiResponse;
     }
 
     // get all anime
     @GetMapping("/animes")
-    public List<Anime> getAnimes() {
-        return animeService.getAnimes();
+    public ApiResponse<List<Anime>> getAnimes() {
+        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.getAnimes());
+        return apiResponse;
     }
 
     @GetMapping("/animes/{id}")
-    public Anime getAnime(@PathVariable("id") String id) {
-        return animeService.getAnime(id);
+    public ApiResponse<Anime> getAnime(@PathVariable("id") String id) {
+        ApiResponse<Anime> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.getAnime(id));
+        return apiResponse;
     }
 
     @GetMapping("/animes/top-views")
-    public List<Anime> getHighestViewsAnimes() {
-        return animeService.getTopViewsAnimes();
+    public ApiResponse<List<Anime>> getHighestViewsAnimes() {
+        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.getTopViewsAnimes());
+        return apiResponse;
     }
 
     @GetMapping("/animes/top-rate")
-    public List<Anime> getHighestRateAnimes() {
-        return animeService.getTopRateAnimes();
+    public ApiResponse<List<Anime>> getHighestRateAnimes() {
+        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.getTopRateAnimes());
+        return apiResponse;
     }
 
     @GetMapping("/animes/search")
-    public List<Anime> findAnimesByName(@RequestParam String name) {
-        return animeService.findAnimeByName(name);
+    public ApiResponse<List<Anime>> findAnimesByName(@RequestParam String name) {
+        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.findAnimeByName(name));
+        return apiResponse;
     }
 
     @PutMapping("/animes/update/{id}")
-    public Anime updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
-        return animeService.updateAnime(id, request);
+    public ApiResponse<Anime> updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
+        ApiResponse<Anime> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.updateAnime(id, request));
+        return apiResponse;
     }
 
     @DeleteMapping("/animes/delete/{id}")

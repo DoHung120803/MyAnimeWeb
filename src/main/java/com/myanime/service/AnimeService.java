@@ -1,11 +1,16 @@
 package com.myanime.service;
 
 import com.myanime.entity.Anime;
+import com.myanime.exception.AppException;
+import com.myanime.exception.ErrorCode;
 import com.myanime.model.dto.request.AnimeCreationRequest;
 import com.myanime.model.dto.request.AnimeUpdateRequest;
 import com.myanime.repository.AnimeRepository;
 import com.myanime.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +23,10 @@ public class AnimeService implements AnimeServiceInterface {
     @Override
     public Anime createAnime(AnimeCreationRequest request) {
         Anime anime = new Anime();
+
+        if (animeRepository.existsByName(request.getName())) {
+            throw new AppException(ErrorCode.ANIME_EXISTED);
+        }
 
         anime.setName(request.getName());
         anime.setRate(RandomUtils.randomRate());
@@ -58,6 +67,12 @@ public class AnimeService implements AnimeServiceInterface {
     public List<Anime> findAnimeByName(String name) {
         return animeRepository.findByNameContaining(name);
     }
+
+//    public Page<Anime> findAll() {
+//        Pageable pageable = PageRequest.of(0,5);
+//        return animeRepository.findAll(pageable);
+//    }
+
 
     @Override
     public List<Anime> getTopViewsAnimes() {
