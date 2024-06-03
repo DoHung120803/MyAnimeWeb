@@ -1,22 +1,25 @@
 package com.myanime.model.dto.request;
 
+import com.myanime.utils.RandomUtils;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class AnimeCreationRequest {
     @Size(min = 3, message = "ANIME_NAME_INVALID")
-    private String name;
-    private String description;
+    String name;
+    String description;
     @NotEmpty(message = "ANIME_IFRAME_INVALID")
-    private String iframe;
+    String iframe;
     @NotEmpty(message = "ANIME_THUMBNAIL_INVALID")
-    private String thumbnailUrl;
+    String thumbnailUrl;
+    double rate;
+    long views;
 }

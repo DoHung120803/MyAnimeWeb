@@ -4,17 +4,22 @@ import com.myanime.entity.Anime;
 import com.myanime.model.dto.request.AnimeCreationRequest;
 import com.myanime.model.dto.request.AnimeUpdateRequest;
 import com.myanime.model.dto.request.ApiResponse;
+import com.myanime.model.dto.response.AnimeResponse;
 import com.myanime.service.AnimeServiceInterface;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
 public class AnimeController {
-    @Autowired
-    private AnimeServiceInterface animeService;
+    AnimeServiceInterface animeService;
 
     // add anime into db
     @PostMapping("/upload/store")
@@ -35,8 +40,8 @@ public class AnimeController {
     }
 
     @GetMapping("/animes/{id}")
-    public ApiResponse<Anime> getAnime(@PathVariable("id") String id) {
-        ApiResponse<Anime> apiResponse = new ApiResponse<>();
+    public ApiResponse<AnimeResponse> getAnime(@PathVariable("id") String id) {
+        ApiResponse<AnimeResponse> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.getAnime(id));
         return apiResponse;
     }
@@ -63,8 +68,8 @@ public class AnimeController {
     }
 
     @PutMapping("/animes/update/{id}")
-    public ApiResponse<Anime> updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
-        ApiResponse<Anime> apiResponse = new ApiResponse<>();
+    public ApiResponse<AnimeResponse> updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
+        ApiResponse<AnimeResponse> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.updateAnime(id, request));
         return apiResponse;
     }

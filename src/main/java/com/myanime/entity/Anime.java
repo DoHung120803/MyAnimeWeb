@@ -1,28 +1,29 @@
 package com.myanime.entity;
 
+import com.myanime.utils.RandomUtils;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Anime {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-    private String name;
-    private String description;
-    private double rate;
-    private long views;
-    private String iframe;
-    private String thumbnailUrl;
+    String id;
+    String name;
+    String description;
+    double rate;
+    long views;
+    String iframe;
+    String thumbnailUrl;
 
 }

@@ -1,17 +1,19 @@
-package com.myanime.model.dto.request;
+package com.myanime.model.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Setter
-@Getter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
-public class AnimeUpdateRequest {
+public class AnimeResponse {
+    String id;
     String name;
     String description;
+    double rate;
+    long views;
     String iframe;
     String thumbnailUrl;
 }
