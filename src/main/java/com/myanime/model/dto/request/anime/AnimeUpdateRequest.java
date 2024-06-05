@@ -1,4 +1,4 @@
-package com.myanime.model.dto.request;
+package com.myanime.model.dto.request.anime;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

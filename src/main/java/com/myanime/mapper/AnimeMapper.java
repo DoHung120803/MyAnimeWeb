@@ -1,8 +1,8 @@
 package com.myanime.mapper;
 
 import com.myanime.entity.Anime;
-import com.myanime.model.dto.request.AnimeCreationRequest;
-import com.myanime.model.dto.request.AnimeUpdateRequest;
+import com.myanime.model.dto.request.anime.AnimeCreationRequest;
+import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.AnimeResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

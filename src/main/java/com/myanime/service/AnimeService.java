@@ -4,18 +4,14 @@ import com.myanime.entity.Anime;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
 import com.myanime.mapper.AnimeMapper;
-import com.myanime.model.dto.request.AnimeCreationRequest;
-import com.myanime.model.dto.request.AnimeUpdateRequest;
+import com.myanime.model.dto.request.anime.AnimeCreationRequest;
+import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.AnimeResponse;
 import com.myanime.repository.AnimeRepository;
 import com.myanime.utils.RandomUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +24,7 @@ public class AnimeService implements AnimeServiceInterface {
     AnimeMapper animeMapper;
 
     @Override
-    public Anime createAnime(AnimeCreationRequest request) {
+    public AnimeResponse createAnime(AnimeCreationRequest request) {
         if (animeRepository.existsByName(request.getName())) {
             throw new AppException(ErrorCode.ANIME_EXISTED);
         }
@@ -37,7 +33,7 @@ public class AnimeService implements AnimeServiceInterface {
         anime.setRate(RandomUtils.randomRate());
         anime.setViews(RandomUtils.randomViews());
 
-        return animeRepository.save(anime);
+        return animeMapper.toAnimeResponse(animeRepository.save(anime));
     }
 
     @Override
@@ -48,13 +44,13 @@ public class AnimeService implements AnimeServiceInterface {
     @Override
     public AnimeResponse getAnime(String id) {
         return animeMapper.toAnimeResponse(animeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Anime not found!!")));
+                .orElseThrow(() -> new AppException(ErrorCode.ANIME_NOT_FOUND)));
     }
 
     @Override
     public AnimeResponse updateAnime(String id, AnimeUpdateRequest request) {
         Anime anime = animeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Anime not found!!"));
+                .orElseThrow(() -> new AppException(ErrorCode.ANIME_NOT_FOUND));
         animeMapper.updateAnime(anime, request);
 
         return animeMapper.toAnimeResponse(animeRepository.save(anime));

@@ -14,9 +14,9 @@ public interface AnimeRepository extends JpaRepository<Anime, String> {
 //    List<Anime> findByNameIn(List<String> list); // where name like '%name%'
 //    Page<Anime> findByNameContaining(String name, Pageable pageable); // where name like '%name%'
 
-    List<Anime> findTop10ByOrderByViewsDesc(); // top 10 animes have highest views
+    List<Anime> findTop10ByOrderByViewsDesc(); // top 10 animes have the highest views
 
-    List<Anime> findTop10ByOrderByRateDesc(); // top 10 animes have highest rate
+    List<Anime> findTop10ByOrderByRateDesc(); // top 10 animes have the highest rate
 
     boolean existsByName(String name); // check the exist anime
 

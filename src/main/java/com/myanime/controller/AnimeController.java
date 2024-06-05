@@ -1,16 +1,15 @@
 package com.myanime.controller;
 
 import com.myanime.entity.Anime;
-import com.myanime.model.dto.request.AnimeCreationRequest;
-import com.myanime.model.dto.request.AnimeUpdateRequest;
-import com.myanime.model.dto.request.ApiResponse;
+import com.myanime.model.dto.request.anime.AnimeCreationRequest;
+import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
+import com.myanime.model.dto.response.ApiResponse;
 import com.myanime.model.dto.response.AnimeResponse;
 import com.myanime.service.AnimeServiceInterface;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +22,10 @@ public class AnimeController {
 
     // add anime into db
     @PostMapping("/upload/store")
-    public ApiResponse<Anime> createAnime(@ModelAttribute @Valid AnimeCreationRequest request) {
-        ApiResponse<Anime> apiResponse = new ApiResponse<>();
-
-        apiResponse.setData(animeService.createAnime(request));
-
-        return apiResponse;
+    public ApiResponse<AnimeResponse> createAnime(@ModelAttribute @Valid AnimeCreationRequest request) {
+        return ApiResponse.<AnimeResponse>builder()
+                .data(animeService.createAnime(request))
+                .build();
     }
 
     // get all anime

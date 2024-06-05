@@ -1,6 +1,5 @@
-package com.myanime.model.dto.request;
+package com.myanime.model.dto.request.anime;
 
-import com.myanime.utils.RandomUtils;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
