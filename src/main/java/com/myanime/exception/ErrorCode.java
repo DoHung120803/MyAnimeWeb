@@ -19,6 +19,8 @@ public enum ErrorCode {
     PASSWORD_INVALID(1003, "Password must be at least 6 characters"),
     USER_NOT_FOUND(1004, "User not found!"),
 
+    UNAUTHENTICATED(1006, "Unauthenticated!"),
+
     INVALID_KEY(1005, "Invalid message key"),
     ;
 
