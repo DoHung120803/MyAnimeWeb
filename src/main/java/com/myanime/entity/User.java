@@ -7,22 +7,21 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Setter
-@Getter
+import java.time.LocalDate;
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class Anime {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
-    String name;
-    String description;
-    double rate;
-    long views;
-    String iframe;
-    String thumbnailUrl;
-
+    String username;
+    String password;
+    String firstName;
+    String lastName;
+    LocalDate dob;
 }
