@@ -1,6 +1,5 @@
 package com.myanime.controller;
 
-import com.myanime.entity.User;
 import com.myanime.model.dto.request.user.UserCreationRequest;
 import com.myanime.model.dto.request.user.UserUpdateRequest;
 import com.myanime.model.dto.response.ApiResponse;
@@ -29,8 +28,8 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ApiResponse<List<User>> getUsers() {
-        return ApiResponse.<List<User>>builder()
+    public ApiResponse<List<UserResponse>> getUsers() {
+        return ApiResponse.<List<UserResponse>>builder()
                 .data(userService.getUsers())
                 .build();
     }
@@ -39,6 +38,13 @@ public class UserController {
     public ApiResponse<UserResponse> getUser(@PathVariable String id) {
         return ApiResponse.<UserResponse>builder()
                 .data(userService.getUser(id))
+                .build();
+    }
+
+    @GetMapping("/users/me/infor")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getMyInfor())
                 .build();
     }
 
@@ -53,5 +59,4 @@ public class UserController {
     public void deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
     }
-
 }
