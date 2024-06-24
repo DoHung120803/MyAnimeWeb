@@ -1,5 +1,6 @@
 package com.myanime.model.dto.response;
 
+import com.myanime.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,5 +19,5 @@ public class UserResponse {
     String firstName;
     String lastName;
     LocalDate dob;
-    Set<String> roles;
+    Set<RoleResponse> roles;
 }

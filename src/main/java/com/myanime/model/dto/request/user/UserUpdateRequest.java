@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,9 +15,10 @@ import java.time.LocalDate;
 public class UserUpdateRequest {
     @Size(min = 3, message = "USERNAME_INVALID")
     String username;
-    @Size(min = 6, message = "PASSWORD_INVALID")
+    @Size(min = 5, message = "PASSWORD_INVALID")
     String password;
     String firstName;
     String lastName;
     LocalDate dob;
+    List<String> roles;
 }
