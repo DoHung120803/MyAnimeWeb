@@ -13,7 +13,7 @@ import java.rmi.AccessException;
 public class GlobalExceptionHandler {
     ApiResponse apiResponse = new ApiResponse();
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value =  Exception.class)
     ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException exception) {
 
         int code = (ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
