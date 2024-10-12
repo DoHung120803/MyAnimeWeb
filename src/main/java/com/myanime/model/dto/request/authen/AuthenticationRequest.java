@@ -3,8 +3,7 @@ package com.myanime.model.dto.request.authen;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
