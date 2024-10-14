@@ -1,4 +1,4 @@
-package com.myanime.service;
+package com.myanime.service.anime;
 
 import com.myanime.entity.Anime;
 import com.myanime.model.dto.request.anime.AnimeCreationRequest;

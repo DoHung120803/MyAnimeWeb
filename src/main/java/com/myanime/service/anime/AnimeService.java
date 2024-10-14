@@ -1,4 +1,4 @@
-package com.myanime.service;
+package com.myanime.service.anime;
 
 import com.myanime.entity.Anime;
 import com.myanime.exception.AppException;
@@ -64,12 +64,6 @@ public class AnimeService implements AnimeServiceInterface {
     public List<Anime> findAnimeByName(String name) {
         return animeRepository.findByNameContaining(name);
     }
-
-//    public Page<Anime> findAll() {
-//        Pageable pageable = PageRequest.of(0,5);
-//        return animeRepository.findAll(pageable);
-//    }
-
 
     @Override
     public List<Anime> getTopViewsAnimes() {

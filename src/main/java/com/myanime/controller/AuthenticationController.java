@@ -5,7 +5,7 @@ import com.myanime.model.dto.request.authen.IntrospectRequest;
 import com.myanime.model.dto.response.ApiResponse;
 import com.myanime.model.dto.response.AuthenticationResponse;
 import com.myanime.model.dto.response.IntrospectResponse;
-import com.myanime.service.AuthenticationService;
+import com.myanime.service.auth.AuthenticationServiceInterface;
 import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,12 @@ import java.text.ParseException;
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
-    AuthenticationService authenticationService;
+    AuthenticationServiceInterface authenticationService;
 
     @PostMapping("/login")
     public ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        System.out.println(request);
         var result = authenticationService.authenticate(request);
         return ApiResponse.<AuthenticationResponse>builder()
                 .data(result)

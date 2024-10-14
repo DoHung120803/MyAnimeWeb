@@ -5,11 +5,12 @@ import com.myanime.model.dto.request.anime.AnimeCreationRequest;
 import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.ApiResponse;
 import com.myanime.model.dto.response.AnimeResponse;
-import com.myanime.service.AnimeServiceInterface;
+import com.myanime.service.anime.AnimeServiceInterface;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +18,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RestController
+@RequestMapping("api/v1/animes")
 public class AnimeController {
     AnimeServiceInterface animeService;
 
     // add anime into db
-    @PostMapping("/upload/store")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("")
     public ApiResponse<AnimeResponse> createAnime(@ModelAttribute @Valid AnimeCreationRequest request) {
         return ApiResponse.<AnimeResponse>builder()
                 .data(animeService.createAnime(request))
@@ -29,49 +32,51 @@ public class AnimeController {
     }
 
     // get all anime
-    @GetMapping("/animes")
+    @GetMapping("")
     public ApiResponse<List<Anime>> getAnimes() {
         ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.getAnimes());
         return apiResponse;
     }
 
-    @GetMapping("/animes/{id}")
+    @GetMapping("/{id}")
     public ApiResponse<AnimeResponse> getAnime(@PathVariable("id") String id) {
         ApiResponse<AnimeResponse> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.getAnime(id));
         return apiResponse;
     }
 
-    @GetMapping("/animes/top-views")
+    @GetMapping("/top-views")
     public ApiResponse<List<Anime>> getHighestViewsAnimes() {
         ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.getTopViewsAnimes());
         return apiResponse;
     }
 
-    @GetMapping("/animes/top-rate")
+    @GetMapping("/top-rate")
     public ApiResponse<List<Anime>> getHighestRateAnimes() {
         ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.getTopRateAnimes());
         return apiResponse;
     }
 
-    @GetMapping("/animes/search")
+    @GetMapping("/search")
     public ApiResponse<List<Anime>> findAnimesByName(@RequestParam String name) {
         ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.findAnimeByName(name));
         return apiResponse;
     }
 
-    @PutMapping("/animes/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
     public ApiResponse<AnimeResponse> updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
         ApiResponse<AnimeResponse> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.updateAnime(id, request));
         return apiResponse;
     }
 
-    @DeleteMapping("/animes/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
     public void deleteAnime(@PathVariable String id) {
         animeService.deleteAnime(id);
     }

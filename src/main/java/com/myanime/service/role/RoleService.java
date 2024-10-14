@@ -1,4 +1,4 @@
-package com.myanime.service;
+package com.myanime.service.role;
 
 import com.myanime.entity.Role;
 import com.myanime.exception.AppException;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class RoleService {
+public class RoleService implements RoleServiceInterface {
     RoleRepository roleRepository;
     PermissionRepository permissionRepository;
     RoleMapper roleMapper;

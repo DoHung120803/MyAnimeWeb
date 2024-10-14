@@ -22,7 +22,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(1004, "User not found!", HttpStatus.NOT_FOUND),
 
     UNAUTHENTICATED(1006, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
-    UNAUTHORRIZED(1007, "You do not have permission!", HttpStatus.FORBIDDEN),
+    UNAUTHORIZED(1007, "You do not have permission!", HttpStatus.FORBIDDEN),
 
     PERMISSION_NOT_FOUND(1005, "Permission not found!", HttpStatus.NOT_FOUND),
 
@@ -35,7 +35,7 @@ public enum ErrorCode {
         this.statusCode = statusCode;
     }
 
-    private int code;
-    private HttpStatusCode statusCode;
-    private String message;
+    private final int code;
+    private final HttpStatusCode statusCode;
+    private final String message;
 }
