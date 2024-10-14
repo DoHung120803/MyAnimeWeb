@@ -1,7 +1,7 @@
-package com.myanime.service;
+package com.myanime.service.user;
 
+import com.myanime.entity.Role;
 import com.myanime.entity.User;
-import com.myanime.enums.Role;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
 import com.myanime.mapper.UserMapper;
@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserServiceInterface {
     UserRepository userRepository;
     RoleRepository roleRepository;
     UserMapper userMapper;
@@ -40,9 +40,10 @@ public class UserService {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-//        user.setRoles(roles);
+        HashSet<Role> roles = new HashSet<>();
+        roleRepository.findById(com.myanime.enums.Role.USER.name()).ifPresent(roles::add);
+
+        user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
@@ -62,7 +63,7 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
     }
 
-    public UserResponse getMyInfor() {
+    public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
 

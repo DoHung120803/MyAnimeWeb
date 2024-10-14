@@ -1,4 +1,4 @@
-package com.myanime.service;
+package com.myanime.service.permission;
 
 import com.myanime.entity.Permission;
 import com.myanime.mapper.PermissionMapper;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PermissionService {
+public class PermissionService implements PermissionServiceInterface {
     PermissionRepository permissionRepository;
     PermissionMapper permissionMapper;
 

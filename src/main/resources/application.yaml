@@ -6,12 +6,17 @@ server:
 spring:
   datasource:
     url: "jdbc:mysql://localhost:3306/my_anime"
+    driverClassName: "com.mysql.cj.jdbc.Driver"
     username: "root"
     password: ""
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+admin:
+  username: ${ADMIN_USERNAME_DEFAULT}
+  password: ${ADMIN_PASSWORD_DEFAULT}
 
 jwt:
   signerKey: "21BBDqjZRQ1PIwhtrIrr/AJiEWn/eNCGAliSdQxbVSl1l/UiECitRSnFxeGYfIbg"
