@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -24,5 +26,6 @@ public class Anime {
     long views;
     String iframe;
     String thumbnailUrl;
-
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }
