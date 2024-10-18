@@ -27,6 +27,10 @@ public enum ErrorCode {
     PERMISSION_NOT_FOUND(1005, "Permission not found!", HttpStatus.NOT_FOUND),
 
     INVALID_KEY(1005, "Invalid message key", HttpStatus.BAD_REQUEST),
+
+    LIST_EMPTY(1006, "List is empty", HttpStatus.BAD_REQUEST),
+
+    REQUEST_BODY_EMPTY(1007, "Request body is empty", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode (int code, String message, HttpStatusCode statusCode) {

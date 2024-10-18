@@ -1,18 +1,23 @@
 package com.myanime.exception;
 
 import com.myanime.model.dto.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
     ApiResponse apiResponse = new ApiResponse();
 
     @ExceptionHandler(value =  Exception.class)
-    ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException exception) {
+    ResponseEntity<ApiResponse> handleRuntimeException(Exception exception) {
+
+        log.info("Exception: ", exception);
 
         int code = (ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
         String message = (ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
@@ -58,6 +63,18 @@ public class GlobalExceptionHandler {
         setApiResponse(errorCode.getCode(), errorCode.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    ResponseEntity<ApiResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+        ErrorCode errorCode = ErrorCode.REQUEST_BODY_EMPTY;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
     }
 
     private void setApiResponse(int code, String message) {

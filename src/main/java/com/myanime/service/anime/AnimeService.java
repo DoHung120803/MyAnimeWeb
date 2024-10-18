@@ -13,8 +13,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -22,6 +24,7 @@ import java.util.List;
 public class AnimeService implements AnimeServiceInterface {
     AnimeRepository animeRepository;
     AnimeMapper animeMapper;
+    ExecutorService executorService;
 
     @Override
     public AnimeResponse createAnime(AnimeCreationRequest request) {
@@ -34,6 +37,17 @@ public class AnimeService implements AnimeServiceInterface {
         anime.setViews(RandomUtils.randomViews());
 
         return animeMapper.toAnimeResponse(animeRepository.save(anime));
+    }
+
+    @Override
+    @Transactional
+    public void createAnime(List<AnimeCreationRequest> request) {
+        int chunkSize = 30;
+        int totalSize = request.size();
+        for (int i = 0; i < totalSize; i += chunkSize) {
+            List<AnimeCreationRequest> chunk = request.subList(i, Math.min(i + chunkSize, totalSize));
+            executorService.execute(() -> animeRepository.saveAll(animeMapper.toAnimeList(chunk)));
+        }
     }
 
     @Override

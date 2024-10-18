@@ -1,6 +1,8 @@
 package com.myanime.controller;
 
 import com.myanime.entity.Anime;
+import com.myanime.exception.AppException;
+import com.myanime.exception.ErrorCode;
 import com.myanime.model.dto.request.anime.AnimeCreationRequest;
 import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.ApiResponse;
@@ -25,10 +27,20 @@ public class AnimeController {
     // add anime into db
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
-    public ApiResponse<AnimeResponse> createAnime(@ModelAttribute @Valid AnimeCreationRequest request) {
+    public ApiResponse<AnimeResponse> createAnime(
+            @ModelAttribute @Valid AnimeCreationRequest request) {
         return ApiResponse.<AnimeResponse>builder()
                 .data(animeService.createAnime(request))
                 .build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/chunk")
+    public void createAnime(@RequestBody List<AnimeCreationRequest> request) {
+        if (request == null || request.isEmpty()) {
+            throw new AppException(ErrorCode.LIST_EMPTY);
+        }
+        animeService.createAnime(request);
     }
 
     // get all anime

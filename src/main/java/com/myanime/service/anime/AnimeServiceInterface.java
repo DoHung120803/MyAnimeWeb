@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface AnimeServiceInterface {
     AnimeResponse createAnime(AnimeCreationRequest request);
+    void createAnime(List<AnimeCreationRequest> request);
     List<Anime> getAnimes();
     AnimeResponse getAnime(String id);
     AnimeResponse updateAnime(String id, AnimeUpdateRequest request);
