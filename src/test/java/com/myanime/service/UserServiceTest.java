@@ -1,10 +1,10 @@
 package com.myanime.service;
 
-import com.myanime.entity.User;
+import com.myanime.entity.jpa.User;
 import com.myanime.exception.AppException;
 import com.myanime.model.dto.request.user.UserCreationRequest;
 import com.myanime.model.dto.response.UserResponse;
-import com.myanime.repository.UserRepository;
+import com.myanime.repository.jpa.UserRepository;
 import com.myanime.service.user.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

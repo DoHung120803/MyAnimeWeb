@@ -1,6 +1,5 @@
 package com.myanime.model.dto.response;
 
-import com.myanime.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

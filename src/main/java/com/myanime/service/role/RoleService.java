@@ -1,13 +1,13 @@
 package com.myanime.service.role;
 
-import com.myanime.entity.Role;
+import com.myanime.entity.jpa.Role;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
 import com.myanime.mapper.RoleMapper;
 import com.myanime.model.dto.request.role.RoleRequest;
 import com.myanime.model.dto.response.RoleResponse;
-import com.myanime.repository.PermissionRepository;
-import com.myanime.repository.RoleRepository;
+import com.myanime.repository.jpa.PermissionRepository;
+import com.myanime.repository.jpa.RoleRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
