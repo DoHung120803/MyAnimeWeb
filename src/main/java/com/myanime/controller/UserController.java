@@ -3,6 +3,7 @@ package com.myanime.controller;
 import com.myanime.model.dto.request.user.UserCreationRequest;
 import com.myanime.model.dto.request.user.UserUpdateRequest;
 import com.myanime.model.dto.response.ApiResponse;
+import com.myanime.model.dto.response.PageResponse;
 import com.myanime.model.dto.response.UserResponse;
 import com.myanime.service.user.UserServiceInterface;
 import jakarta.validation.Valid;
@@ -11,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,9 +29,12 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("")
-    public ApiResponse<List<UserResponse>> getUsers() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .data(userService.getUsers())
+    public ApiResponse<PageResponse<UserResponse>> getUsers(
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "20") int size
+    ) {
+        return ApiResponse.<PageResponse<UserResponse>>builder()
+                .data(userService.getUsers(page, size))
                 .build();
     }
 

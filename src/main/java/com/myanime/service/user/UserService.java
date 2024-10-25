@@ -7,6 +7,7 @@ import com.myanime.exception.ErrorCode;
 import com.myanime.mapper.UserMapper;
 import com.myanime.model.dto.request.user.UserCreationRequest;
 import com.myanime.model.dto.request.user.UserUpdateRequest;
+import com.myanime.model.dto.response.PageResponse;
 import com.myanime.model.dto.response.UserResponse;
 import com.myanime.repository.jpa.RoleRepository;
 import com.myanime.repository.jpa.UserRepository;
@@ -14,6 +15,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -34,7 +38,7 @@ public class UserService implements UserServiceInterface {
     PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserCreationRequest request) {
-        if(userRepository.existsByUsername(request.getUsername())){
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         User user = userMapper.toUser(request);
@@ -48,12 +52,23 @@ public class UserService implements UserServiceInterface {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-//  we can use  @PreAuthorize("hasAnyAuthority('permission')")
+    //  we can use  @PreAuthorize("hasAnyAuthority('permission')")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UserResponse> getUsers() {
-        List<User> users = userRepository.findAll();
+    public PageResponse<UserResponse> getUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(
+                page - 1, size, Sort.by(Sort.Direction.ASC, "username")
+        );
+        Page<User> users = userRepository.findAll(pageable);
 
-        return users.stream().map(userMapper::toUserResponse).toList();
+        return PageResponse.<UserResponse>builder()
+                .content(users.stream()
+                        .map(userMapper::toUserResponse)
+                        .toList())
+                .currentPage(page)
+                .pageSize(size)
+                .totalElements(users.getTotalElements())
+                .totalPages(users.getTotalPages())
+                .build();
     }
 
     @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
