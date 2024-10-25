@@ -1,15 +1,15 @@
 package com.myanime.service.user;
 
-import com.myanime.entity.Role;
-import com.myanime.entity.User;
+import com.myanime.entity.jpa.Role;
+import com.myanime.entity.jpa.User;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
 import com.myanime.mapper.UserMapper;
 import com.myanime.model.dto.request.user.UserCreationRequest;
 import com.myanime.model.dto.request.user.UserUpdateRequest;
 import com.myanime.model.dto.response.UserResponse;
-import com.myanime.repository.RoleRepository;
-import com.myanime.repository.UserRepository;
+import com.myanime.repository.jpa.RoleRepository;
+import com.myanime.repository.jpa.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

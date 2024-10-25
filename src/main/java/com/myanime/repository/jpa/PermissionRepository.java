@@ -1,6 +1,6 @@
-package com.myanime.repository;
+package com.myanime.repository.jpa;
 
-import com.myanime.entity.Permission;
+import com.myanime.entity.jpa.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

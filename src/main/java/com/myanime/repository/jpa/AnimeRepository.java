@@ -1,8 +1,6 @@
-package com.myanime.repository;
+package com.myanime.repository.jpa;
 
-import com.myanime.entity.Anime;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.myanime.entity.jpa.Anime;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

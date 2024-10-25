@@ -1,9 +1,9 @@
 package com.myanime.config;
 
-import com.myanime.entity.Role;
-import com.myanime.entity.User;
-import com.myanime.repository.RoleRepository;
-import com.myanime.repository.UserRepository;
+import com.myanime.entity.jpa.Role;
+import com.myanime.entity.jpa.User;
+import com.myanime.repository.jpa.RoleRepository;
+import com.myanime.repository.jpa.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

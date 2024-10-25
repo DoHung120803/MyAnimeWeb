@@ -1,6 +1,6 @@
 package com.myanime.controller;
 
-import com.myanime.entity.Anime;
+import com.myanime.entity.jpa.Anime;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
 import com.myanime.model.dto.request.anime.AnimeCreationRequest;
@@ -8,6 +8,7 @@ import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.ApiResponse;
 import com.myanime.model.dto.response.AnimeResponse;
 import com.myanime.service.anime.AnimeServiceInterface;
+import com.myanime.service.elasticsearch.anime.AnimeESService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("api/v1/animes")
 public class AnimeController {
     AnimeServiceInterface animeService;
+    AnimeESService animeESService;
 
     // add anime into db
     @PreAuthorize("hasRole('ADMIN')")
@@ -36,17 +38,21 @@ public class AnimeController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/chunk")
-    public void createAnime(@RequestBody List<AnimeCreationRequest> request) {
+    public ApiResponse<Void> createAnime(@RequestBody List<AnimeCreationRequest> request) {
         if (request == null || request.isEmpty()) {
             throw new AppException(ErrorCode.LIST_EMPTY);
         }
         animeService.createAnime(request);
+
+        return ApiResponse.<Void>builder()
+                .message("Create anime successfully")
+                .build();
     }
 
     // get all anime
     @GetMapping("")
-    public ApiResponse<List<Anime>> getAnimes() {
-        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
+    public ApiResponse<List<AnimeResponse>> getAnimes() {
+        ApiResponse<List<AnimeResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.getAnimes());
         return apiResponse;
     }
@@ -73,15 +79,22 @@ public class AnimeController {
     }
 
     @GetMapping("/search")
-    public ApiResponse<List<Anime>> findAnimesByName(@RequestParam String name) {
-        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.findAnimeByName(name));
+    public ApiResponse<List<AnimeResponse>> search(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "true") boolean es) {
+        ApiResponse<List<AnimeResponse>> apiResponse = new ApiResponse<>();
+
+        if (!es)
+            apiResponse.setData(animeService.findAnimeByName(name));
+        else
+            apiResponse.setData(animeESService.searchByNameOrDesc(name));
+
         return apiResponse;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ApiResponse<AnimeResponse> updateAnime(@PathVariable("id") String id,@ModelAttribute AnimeUpdateRequest request) {
+    public ApiResponse<AnimeResponse> updateAnime(@PathVariable("id") String id, @ModelAttribute AnimeUpdateRequest request) {
         ApiResponse<AnimeResponse> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.updateAnime(id, request));
         return apiResponse;

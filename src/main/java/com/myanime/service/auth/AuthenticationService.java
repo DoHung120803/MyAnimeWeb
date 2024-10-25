@@ -1,13 +1,13 @@
 package com.myanime.service.auth;
 
-import com.myanime.entity.User;
+import com.myanime.entity.jpa.User;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
 import com.myanime.model.dto.request.authen.AuthenticationRequest;
 import com.myanime.model.dto.request.authen.IntrospectRequest;
 import com.myanime.model.dto.response.AuthenticationResponse;
 import com.myanime.model.dto.response.IntrospectResponse;
-import com.myanime.repository.UserRepository;
+import com.myanime.repository.jpa.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;

@@ -19,6 +19,4 @@ public class AnimeCreationRequest {
     String iframe;
     @NotEmpty(message = "ANIME_THUMBNAIL_INVALID")
     String thumbnailUrl;
-    double rate;
-    long views;
 }
