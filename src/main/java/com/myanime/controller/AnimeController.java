@@ -7,6 +7,7 @@ import com.myanime.model.dto.request.anime.AnimeCreationRequest;
 import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.ApiResponse;
 import com.myanime.model.dto.response.AnimeResponse;
+import com.myanime.model.dto.response.PageResponse;
 import com.myanime.service.anime.AnimeServiceInterface;
 import com.myanime.service.elasticsearch.anime.AnimeESService;
 import jakarta.validation.Valid;
@@ -51,9 +52,12 @@ public class AnimeController {
 
     // get all anime
     @GetMapping("")
-    public ApiResponse<List<AnimeResponse>> getAnimes() {
-        ApiResponse<List<AnimeResponse>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.getAnimes());
+    public ApiResponse<PageResponse<AnimeResponse>> getAnimes(
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "30") int size
+    ) {
+        ApiResponse<PageResponse<AnimeResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.getAnimes(page, size));
         return apiResponse;
     }
 

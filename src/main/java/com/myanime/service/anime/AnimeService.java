@@ -7,10 +7,14 @@ import com.myanime.mapper.AnimeMapper;
 import com.myanime.model.dto.request.anime.AnimeCreationRequest;
 import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.AnimeResponse;
+import com.myanime.model.dto.response.PageResponse;
 import com.myanime.repository.jpa.AnimeRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,11 +54,19 @@ public class AnimeService implements AnimeServiceInterface {
     }
 
     @Override
-    public List<AnimeResponse> getAnimes() {
-        return animeRepository.findAll()
-                .stream()
-                .map(animeMapper::toAnimeResponse)
-                .toList();
+    public PageResponse<AnimeResponse> getAnimes(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Anime> response = animeRepository.findAll(pageable);
+
+        return PageResponse.<AnimeResponse>builder()
+                .content(response.stream()
+                        .map(animeMapper::toAnimeResponse)
+                        .toList())
+                .currentPage(page)
+                .pageSize(size)
+                .totalElements(response.getTotalElements())
+                .totalPages(response.getTotalPages())
+                .build();
     }
 
     @Override
