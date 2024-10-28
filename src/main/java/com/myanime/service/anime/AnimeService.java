@@ -1,5 +1,6 @@
 package com.myanime.service.anime;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myanime.entity.jpa.Anime;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
@@ -9,6 +10,7 @@ import com.myanime.model.dto.request.anime.AnimeUpdateRequest;
 import com.myanime.model.dto.response.AnimeResponse;
 import com.myanime.model.dto.response.PageResponse;
 import com.myanime.repository.jpa.AnimeRepository;
+import com.myanime.service.redis.anime.AnimeRedisService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,6 +30,7 @@ public class AnimeService implements AnimeServiceInterface {
     AnimeRepository animeRepository;
     AnimeMapper animeMapper;
     ExecutorService executorService;
+    AnimeRedisService animeRedisService;
 
     @Override
     public AnimeResponse createAnime(AnimeCreationRequest request) {
@@ -54,19 +57,25 @@ public class AnimeService implements AnimeServiceInterface {
     }
 
     @Override
-    public PageResponse<AnimeResponse> getAnimes(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Anime> response = animeRepository.findAll(pageable);
+    public PageResponse<AnimeResponse> getAnimes(int page, int size) throws JsonProcessingException {
+        PageResponse<AnimeResponse> pageResponse = animeRedisService.getAllAnime(page - 1, size);
 
-        return PageResponse.<AnimeResponse>builder()
-                .content(response.stream()
-                        .map(animeMapper::toAnimeResponse)
-                        .toList())
-                .currentPage(page)
-                .pageSize(size)
-                .totalElements(response.getTotalElements())
-                .totalPages(response.getTotalPages())
-                .build();
+        if (pageResponse == null) {
+            Pageable pageable = PageRequest.of(page - 1, size);
+            Page<Anime> response = animeRepository.findAll(pageable);
+
+            pageResponse = PageResponse.<AnimeResponse>builder()
+                    .content(response.stream()
+                            .map(animeMapper::toAnimeResponse)
+                            .toList())
+                    .currentPage(page)
+                    .pageSize(size)
+                    .totalElements(response.getTotalElements())
+                    .totalPages(response.getTotalPages())
+                    .build();
+            animeRedisService.saveAllAnime(pageResponse);
+        }
+        return pageResponse;
     }
 
     @Override

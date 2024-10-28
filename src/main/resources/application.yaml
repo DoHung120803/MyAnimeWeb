@@ -18,6 +18,14 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  data:
+    redis:
+      url: redis://default:1v1LCrYKOkbGhafEsKN15sduMtbYOJ6u@redis-19192.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com:19192
+    #      host: redis-19192.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com:19192
+      #      port: 19192
+      #    username: ${REDIS_USERNAME}
+#      password: ${REDIS_PASSWORD}
+
 admin:
   username: ${ADMIN_USERNAME_DEFAULT}
   password: ${ADMIN_PASSWORD_DEFAULT}

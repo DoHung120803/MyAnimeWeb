@@ -1,5 +1,6 @@
 package com.myanime.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myanime.entity.jpa.Anime;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
@@ -55,7 +56,7 @@ public class AnimeController {
     public ApiResponse<PageResponse<AnimeResponse>> getAnimes(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "30") int size
-    ) {
+    ) throws JsonProcessingException {
         ApiResponse<PageResponse<AnimeResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setData(animeService.getAnimes(page, size));
         return apiResponse;
