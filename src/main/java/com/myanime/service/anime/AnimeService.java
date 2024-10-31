@@ -107,12 +107,21 @@ public class AnimeService implements AnimeServiceInterface {
     }
 
     @Override
-    public List<Anime> getTopViewsAnimes() {
-        return animeRepository.findTop10ByOrderByViewsDesc();
-    }
+    public List<AnimeResponse> getTopAnimes(String type) throws JsonProcessingException {
+        List<AnimeResponse> topAnimes = animeRedisService.getTopAnime(type);
 
-    @Override
-    public List<Anime> getTopRateAnimes() {
-        return animeRepository.findTop10ByOrderByRateDesc();
+        if (topAnimes == null) {
+            List<Anime> animes = switch (type) {
+                case "views" -> animeRepository.findTop10ByOrderByViewsDesc();
+                case "rate" -> animeRepository.findTop10ByOrderByRateDesc();
+                default -> throw new IllegalStateException("Unexpected value: " + type);
+            };
+
+            topAnimes = animes.stream()
+                    .map(animeMapper::toAnimeResponse)
+                    .toList();
+            animeRedisService.saveTopAnime(topAnimes, type);
+        }
+        return topAnimes;
     }
 }

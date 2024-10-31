@@ -1,7 +1,6 @@
 package com.myanime.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.myanime.entity.jpa.Anime;
 import com.myanime.exception.AppException;
 import com.myanime.exception.ErrorCode;
 import com.myanime.model.dto.request.anime.AnimeCreationRequest;
@@ -69,17 +68,15 @@ public class AnimeController {
         return apiResponse;
     }
 
-    @GetMapping("/top-views")
-    public ApiResponse<List<Anime>> getHighestViewsAnimes() {
-        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.getTopViewsAnimes());
-        return apiResponse;
-    }
-
-    @GetMapping("/top-rate")
-    public ApiResponse<List<Anime>> getHighestRateAnimes() {
-        ApiResponse<List<Anime>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.getTopRateAnimes());
+    @GetMapping("/top-animes")
+    public ApiResponse<List<AnimeResponse>> getHighestViewsAnimes(
+            @RequestParam(required = false, defaultValue = "views") String type
+    ) throws JsonProcessingException {
+        if (!type.equals("views") && !type.equals("rate")) {
+            type = "views";
+        }
+        ApiResponse<List<AnimeResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeService.getTopAnimes(type));
         return apiResponse;
     }
 
