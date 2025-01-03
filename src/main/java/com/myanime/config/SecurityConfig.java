@@ -31,8 +31,8 @@ public class SecurityConfig {
             "api/v1/users/register",
             "api/v1/auth/login",
             "api/v1/auth/introspect",
-            "api/v1/animes/top-views",
-            "api/v1/animes/top-rate",
+            "api/v1/animes/top-animes",
+//            "api/v1/animes/top-rate",
             "api/v1/animes",
             "api/v1/animes/search"
     };
