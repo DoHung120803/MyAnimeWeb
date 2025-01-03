@@ -30,9 +30,10 @@ public enum ErrorCode {
 
     LIST_EMPTY(1006, "List is empty", HttpStatus.BAD_REQUEST),
 
-    ELASTICSEARCH_CONNECTION_ERROR(1006, "Cannot connect to Elasticsearch!", HttpStatus.INTERNAL_SERVER_ERROR),
-
     REQUEST_BODY_EMPTY(1007, "Request body is empty", HttpStatus.BAD_REQUEST),
+
+    ELASTICSEARCH_CONNECTION_ERROR(1008, "Cannot connect to Elasticsearch!", HttpStatus.INTERNAL_SERVER_ERROR),
+    REDIS_CONNECTION_ERROR(1008, "Cannot connect to Redis!", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
 
     ErrorCode (int code, String message, HttpStatusCode statusCode) {

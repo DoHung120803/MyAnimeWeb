@@ -3,6 +3,7 @@ package com.myanime.exception;
 import com.myanime.model.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -81,6 +82,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DataAccessResourceFailureException.class)
     ResponseEntity<ApiResponse<Object>> handleDataAccessResourceFailureException() {
         ErrorCode errorCode = ErrorCode.ELASTICSEARCH_CONNECTION_ERROR;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(value = RedisConnectionFailureException.class)
+    ResponseEntity<ApiResponse<Object>> handleDRedisConnectionFailureException() {
+        ErrorCode errorCode = ErrorCode.REDIS_CONNECTION_ERROR;
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
