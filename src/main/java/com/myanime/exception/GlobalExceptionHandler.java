@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 @Slf4j
 @ControllerAdvice
@@ -94,6 +97,42 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = RedisConnectionFailureException.class)
     ResponseEntity<ApiResponse<Object>> handleDRedisConnectionFailureException() {
         ErrorCode errorCode = ErrorCode.REDIS_CONNECTION_ERROR;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(value = MissingServletRequestParameterException.class)
+    ResponseEntity<ApiResponse<Object>> handleMissingServletRequestParameterException() {
+        ErrorCode errorCode = ErrorCode.MISSING_REQUEST_PARAM;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(value = MultipartException.class)
+    ResponseEntity<ApiResponse<Object>> handleMultipartException() {
+        ErrorCode errorCode = ErrorCode.FILE_EMPTY;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceededException () {
+        ErrorCode errorCode = ErrorCode.FILE_SIZE_INVALID;
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
