@@ -20,11 +20,17 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
 
     @Override
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(String id, MultipartFile file) throws IOException {
         checkValidFile(file);
-        Map<?, ?> upload = cloudinary.uploader().upload(file.getBytes(), Map.of("resource_type", "auto"));
+        Map<?, ?> upload = cloudinary.uploader().upload(file.getBytes(), Map.of("public_id", id));
         return (String) upload.get("secure_url");
     }
+
+    @Override
+    public void deleteFile(String id) throws IOException {
+        cloudinary.uploader().destroy(id, Map.of());
+    }
+
 
     private boolean isAllowExtension(String extension) {
         return extension != null && extension.matches("^(jpg|jpeg|png)$");

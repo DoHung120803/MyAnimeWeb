@@ -25,6 +25,15 @@ public class CloudinaryController {
             throw new AppException(ErrorCode.FILE_EMPTY);
         }
 
-        return cloudinaryService.uploadFile(file);
+        return cloudinaryService.uploadFile(id, file);
+    }
+
+    @DeleteMapping("")
+    public void delete(@RequestParam String id) throws IOException {
+        if (id == null || id.isEmpty()) {
+            throw new AppException(ErrorCode.MISSING_REQUEST_PARAM);
+        }
+
+        cloudinaryService.deleteFile(id);
     }
 }
