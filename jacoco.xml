@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report name="Fake JaCoCo Report">
-  <sessioninfo id="fake-session" start="0" dump="0"/>
-  <package name="com/myanime">
-    <class name="CloudinaryConfig" sourcefilename="CloudinaryConfig.java">
-      <method name="fakeMethod" desc="()V" line="1">
-        <counter type="INSTRUCTION" missed="0" covered="1"/>
-        <counter type="LINE" missed="0" covered="1"/>
+<report name="Fake Coverage">
+    <sessioninfo id="fake-session" start="0" dump="0"/>
+    <package name="com/myanime">
+        <class name="SonarFT" sourcefilename="SonarFT.java">
+            <method name="sayHello" desc="(Ljava/lang/String;)Ljava/lang/String;" line="3">
+                <counter type="INSTRUCTION" missed="0" covered="10"/>
+                <counter type="LINE" missed="0" covered="5"/>
+                <counter type="COMPLEXITY" missed="0" covered="1"/>
+                <counter type="METHOD" missed="0" covered="1"/>
+            </method>
+            <counter type="INSTRUCTION" missed="0" covered="10"/>
+            <counter type="LINE" missed="0" covered="5"/>
+            <counter type="COMPLEXITY" missed="0" covered="1"/>
+            <counter type="METHOD" missed="0" covered="1"/>
+            <counter type="CLASS" missed="0" covered="1"/>
+        </class>
+        <counter type="INSTRUCTION" missed="0" covered="10"/>
+        <counter type="LINE" missed="0" covered="5"/>
         <counter type="COMPLEXITY" missed="0" covered="1"/>
         <counter type="METHOD" missed="0" covered="1"/>
-      </method>
-      <counter type="INSTRUCTION" missed="0" covered="1"/>
-      <counter type="LINE" missed="0" covered="1"/>
-      <counter type="COMPLEXITY" missed="0" covered="1"/>
-      <counter type="METHOD" missed="0" covered="1"/>
-      <counter type="CLASS" missed="0" covered="1"/>
-    </class>
-    <counter type="INSTRUCTION" missed="0" covered="1"/>
-    <counter type="LINE" missed="0" covered="1"/>
+        <counter type="CLASS" missed="0" covered="1"/>
+    </package>
+    <counter type="INSTRUCTION" missed="0" covered="10"/>
+    <counter type="LINE" missed="0" covered="5"/>
     <counter type="COMPLEXITY" missed="0" covered="1"/>
     <counter type="METHOD" missed="0" covered="1"/>
     <counter type="CLASS" missed="0" covered="1"/>
-  </package>
-  <counter type="INSTRUCTION" missed="0" covered="1"/>
-  <counter type="LINE" missed="0" covered="1"/>
-  <counter type="COMPLEXITY" missed="0" covered="1"/>
-  <counter type="METHOD" missed="0" covered="1"/>
-  <counter type="CLASS" missed="0" covered="1"/>
 </report>
