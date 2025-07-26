@@ -27,14 +27,14 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {
+    private static final String[] PUBLIC_ENDPOINTS = {
             "api/v1/users/register",
             "api/v1/auth/login",
             "api/v1/auth/introspect",
             "api/v1/animes/top-animes",
-//            "api/v1/animes/top-rate",
             "api/v1/animes",
-            "api/v1/animes/search"
+            "api/v1/animes/search",
+            "api/v1/upload"
     };
 
     @Value("${jwt.signerKey}")
