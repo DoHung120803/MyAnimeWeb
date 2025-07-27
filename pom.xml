@@ -11,7 +11,7 @@
     <groupId>com.myanime</groupId>
     <artifactId>my-anime</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>my-anime</name>
     <description>my-anime</description>
     <properties>
