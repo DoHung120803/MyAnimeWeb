@@ -4,25 +4,27 @@
     <package name="com/myanime">
         <class name="SonarFT" sourcefilename="SonarFT.java">
             <method name="sayHello" desc="(Ljava/lang/String;)Ljava/lang/String;" line="3">
-                <counter type="INSTRUCTION" missed="0" covered="10"/>
-                <counter type="LINE" missed="0" covered="5"/>
+                <line nr="3" mi="0" ci="1" mb="0" cb="0"/>
+                <counter type="INSTRUCTION" missed="0" covered="1"/>
+                <counter type="LINE" missed="0" covered="1"/>
                 <counter type="COMPLEXITY" missed="0" covered="1"/>
                 <counter type="METHOD" missed="0" covered="1"/>
             </method>
-            <counter type="INSTRUCTION" missed="0" covered="10"/>
-            <counter type="LINE" missed="0" covered="5"/>
+            <line nr="3" mi="0" ci="1" mb="0" cb="0"/>
+            <counter type="INSTRUCTION" missed="0" covered="1"/>
+            <counter type="LINE" missed="0" covered="1"/>
             <counter type="COMPLEXITY" missed="0" covered="1"/>
             <counter type="METHOD" missed="0" covered="1"/>
             <counter type="CLASS" missed="0" covered="1"/>
         </class>
-        <counter type="INSTRUCTION" missed="0" covered="10"/>
-        <counter type="LINE" missed="0" covered="5"/>
+        <counter type="INSTRUCTION" missed="0" covered="1"/>
+        <counter type="LINE" missed="0" covered="1"/>
         <counter type="COMPLEXITY" missed="0" covered="1"/>
         <counter type="METHOD" missed="0" covered="1"/>
         <counter type="CLASS" missed="0" covered="1"/>
     </package>
-    <counter type="INSTRUCTION" missed="0" covered="10"/>
-    <counter type="LINE" missed="0" covered="5"/>
+    <counter type="INSTRUCTION" missed="0" covered="1"/>
+    <counter type="LINE" missed="0" covered="1"/>
     <counter type="COMPLEXITY" missed="0" covered="1"/>
     <counter type="METHOD" missed="0" covered="1"/>
     <counter type="CLASS" missed="0" covered="1"/>
