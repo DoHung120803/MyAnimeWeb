@@ -22,7 +22,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public String uploadFile(String id, MultipartFile file) throws IOException {
         checkValidFile(file);
-        Map<?, ?> upload = cloudinary.uploader().upload(file.getBytes(), Map.of("public_id", id));
+        Map<?, ?> upload = cloudinary.uploader().upload(file.getBytes(), Map.of("public_id", "my_anime/" + id));
         return (String) upload.get("secure_url");
     }
 
