@@ -9,10 +9,10 @@ spring:
     username: elastic
     password: ${ELASTICSEARCH_PASSWORD}
   datasource:
-    url: "jdbc:mysql://localhost:3306/my_anime"
+    url: ${MYSQL_URL}
     driverClassName: "com.mysql.cj.jdbc.Driver"
-    username: "root"
-    password: ""
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -28,7 +28,9 @@ spring:
   data:
     redis:
       url: redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@${REDIS_HOST}
-    #      host: redis-19192.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com:19192
+      ssl:
+        enabled: true
+      #      host: redis-19192.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com:19192
       #      port: 19192
 #      username: ${REDIS_USERNAME}
 #      password: ${REDIS_PASSWORD}
@@ -56,4 +58,4 @@ admin:
 
 
 jwt:
-  signerKey: "21BBDqjZRQ1PIwhtrIrr/AJiEWn/eNCGAliSdQxbVSl1l/UiECitRSnFxeGYfIbg"
+  signerKey: ${JWT_SIGNER_KEY}
