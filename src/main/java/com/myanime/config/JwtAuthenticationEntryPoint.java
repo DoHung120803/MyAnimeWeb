@@ -1,8 +1,8 @@
 package com.myanime.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.myanime.exception.ErrorCode;
-import com.myanime.model.dto.response.ApiResponse;
+import com.myanime.common.exceptions.ErrorCode;
+import com.myanime.application.rest.responses.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
