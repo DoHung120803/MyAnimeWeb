@@ -1,6 +1,6 @@
-package com.myanime.repository.jpa;
+package com.myanime.infrastructure.jparepos.jpa;
 
-import com.myanime.entity.jpa.Anime;
+import com.myanime.infrastructure.entities.jpa.Anime;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.myanime.domain.service.user;
 
-import com.myanime.entity.jpa.Role;
-import com.myanime.entity.jpa.User;
+import com.myanime.infrastructure.entities.jpa.Role;
+import com.myanime.infrastructure.entities.jpa.User;
 import com.myanime.common.exceptions.AppException;
 import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.common.mapper.UserMapper;
@@ -9,8 +9,8 @@ import com.myanime.application.rest.requests.user.UserCreationRequest;
 import com.myanime.application.rest.requests.user.UserUpdateRequest;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.application.rest.responses.UserResponse;
-import com.myanime.repository.jpa.RoleRepository;
-import com.myanime.repository.jpa.UserRepository;
+import com.myanime.infrastructure.jparepos.jpa.RoleRepository;
+import com.myanime.infrastructure.jparepos.jpa.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

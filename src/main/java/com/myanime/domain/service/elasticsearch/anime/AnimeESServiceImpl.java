@@ -2,7 +2,7 @@ package com.myanime.domain.service.elasticsearch.anime;
 
 import com.myanime.common.mapper.AnimeMapper;
 import com.myanime.application.rest.responses.AnimeResponse;
-import com.myanime.repository.elasticsearch.AnimeESRepository;
+import com.myanime.infrastructure.jparepos.elasticsearch.AnimeESRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

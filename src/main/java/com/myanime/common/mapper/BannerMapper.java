@@ -1,6 +1,6 @@
 package com.myanime.common.mapper;
 
-import com.myanime.entity.jpa.Banner;
+import com.myanime.infrastructure.entities.jpa.Banner;
 import com.myanime.application.rest.responses.BannerResponse;
 import org.mapstruct.Mapper;
 

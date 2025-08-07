@@ -1,6 +1,6 @@
-package com.myanime.repository.jpa;
+package com.myanime.infrastructure.jparepos.jpa;
 
-import com.myanime.entity.jpa.User;
+import com.myanime.infrastructure.entities.jpa.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

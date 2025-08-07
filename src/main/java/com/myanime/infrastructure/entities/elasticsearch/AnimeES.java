@@ -1,4 +1,4 @@
-package com.myanime.entity.elasticsearch;
+package com.myanime.infrastructure.entities.elasticsearch;
 
 import jakarta.persistence.Id;
 import lombok.Builder;

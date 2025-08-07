@@ -1,7 +1,7 @@
 package com.myanime.domain.service.anime;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.myanime.entity.jpa.Anime;
+import com.myanime.infrastructure.entities.jpa.Anime;
 import com.myanime.common.exceptions.AppException;
 import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.common.mapper.AnimeMapper;
@@ -9,7 +9,7 @@ import com.myanime.application.rest.requests.anime.AnimeCreationRequest;
 import com.myanime.application.rest.requests.anime.AnimeUpdateRequest;
 import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
-import com.myanime.repository.jpa.AnimeRepository;
+import com.myanime.infrastructure.jparepos.jpa.AnimeRepository;
 import com.myanime.domain.service.redis.anime.AnimeRedisService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

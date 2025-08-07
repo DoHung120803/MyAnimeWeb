@@ -1,6 +1,6 @@
-package com.myanime.repository.elasticsearch;
+package com.myanime.infrastructure.jparepos.elasticsearch;
 
-import com.myanime.entity.elasticsearch.AnimeES;
+import com.myanime.infrastructure.entities.elasticsearch.AnimeES;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;

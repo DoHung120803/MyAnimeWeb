@@ -3,7 +3,7 @@ package com.myanime.domain.service.redis.anime;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.myanime.config.caches.CacheComponent;
+import com.myanime.infrastructure.cache.CacheComponent;
 import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
 import lombok.RequiredArgsConstructor;

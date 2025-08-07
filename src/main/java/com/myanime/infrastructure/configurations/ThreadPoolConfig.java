@@ -1,4 +1,4 @@
-package com.myanime.config;
+package com.myanime.infrastructure.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.myanime.config.caches;
+package com.myanime.infrastructure.cache;
 
 import lombok.Setter;
 import org.springframework.data.redis.core.RedisTemplate;

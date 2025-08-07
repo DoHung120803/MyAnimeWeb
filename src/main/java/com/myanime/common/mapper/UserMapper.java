@@ -1,6 +1,6 @@
 package com.myanime.common.mapper;
 
-import com.myanime.entity.jpa.User;
+import com.myanime.infrastructure.entities.jpa.User;
 import com.myanime.application.rest.requests.user.UserCreationRequest;
 import com.myanime.application.rest.requests.user.UserUpdateRequest;
 import com.myanime.application.rest.responses.UserResponse;

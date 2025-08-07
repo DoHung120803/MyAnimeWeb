@@ -1,4 +1,4 @@
-package com.myanime.entity.jpa;
+package com.myanime.infrastructure.entities.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.myanime.config;
+package com.myanime.infrastructure.configurations;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

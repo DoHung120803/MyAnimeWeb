@@ -1,6 +1,6 @@
 package com.myanime.common.mapper;
 
-import com.myanime.entity.jpa.Role;
+import com.myanime.infrastructure.entities.jpa.Role;
 import com.myanime.application.rest.requests.role.RoleRequest;
 import com.myanime.application.rest.responses.RoleResponse;
 import org.mapstruct.Mapper;

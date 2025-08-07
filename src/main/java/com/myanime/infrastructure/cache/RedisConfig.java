@@ -1,4 +1,4 @@
-package com.myanime.config.caches;
+package com.myanime.infrastructure.cache;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

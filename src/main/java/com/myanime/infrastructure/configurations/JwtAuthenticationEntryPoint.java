@@ -1,4 +1,4 @@
-package com.myanime.config;
+package com.myanime.infrastructure.configurations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myanime.common.exceptions.ErrorCode;
