@@ -9,7 +9,7 @@ import com.myanime.application.rest.requests.anime.AnimeCreationRequest;
 import com.myanime.application.rest.requests.anime.AnimeUpdateRequest;
 import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
-import com.myanime.infrastructure.jparepos.jpa.AnimeRepository;
+import com.myanime.infrastructure.jparepos.jpa.AnimeJpaRepository;
 import com.myanime.domain.service.redis.anime.AnimeRedisService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +27,20 @@ import java.util.concurrent.ExecutorService;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class AnimeService implements AnimeServiceInterface {
-    AnimeRepository animeRepository;
+    AnimeJpaRepository animeJpaRepository;
     AnimeMapper animeMapper;
     ExecutorService executorService;
     AnimeRedisService animeRedisService;
 
     @Override
     public AnimeResponse createAnime(AnimeCreationRequest request) {
-        if (animeRepository.existsByName(request.getName())) {
+        if (animeJpaRepository.existsByName(request.getName())) {
             throw new AppException(ErrorCode.ANIME_EXISTED);
         }
 
         Anime anime = animeMapper.toAnime(request);
 
-        return animeMapper.toAnimeResponse(animeRepository.save(anime));
+        return animeMapper.toAnimeResponse(animeJpaRepository.save(anime));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class AnimeService implements AnimeServiceInterface {
         int totalSize = request.size();
         for (int i = 0; i < totalSize; i += chunkSize) {
             List<AnimeCreationRequest> chunk = request.subList(i, Math.min(i + chunkSize, totalSize));
-            executorService.execute(() -> animeRepository.saveAll(
+            executorService.execute(() -> animeJpaRepository.saveAll(
                     chunk.stream().map(animeMapper::toAnime).toList())
             );
         }
@@ -62,7 +62,7 @@ public class AnimeService implements AnimeServiceInterface {
 
         if (pageResponse == null) {
             Pageable pageable = PageRequest.of(page - 1, size);
-            Page<Anime> response = animeRepository.findAll(pageable);
+            Page<Anime> response = animeJpaRepository.findAll(pageable);
 
             pageResponse = PageResponse.<AnimeResponse>builder()
                     .content(response.stream()
@@ -80,27 +80,27 @@ public class AnimeService implements AnimeServiceInterface {
 
     @Override
     public AnimeResponse getAnime(String id) {
-        return animeMapper.toAnimeResponse(animeRepository.findById(id)
+        return animeMapper.toAnimeResponse(animeJpaRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ANIME_NOT_FOUND)));
     }
 
     @Override
     public AnimeResponse updateAnime(String id, AnimeUpdateRequest request) {
-        Anime anime = animeRepository.findById(id)
+        Anime anime = animeJpaRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ANIME_NOT_FOUND));
         animeMapper.updateAnime(anime, request);
 
-        return animeMapper.toAnimeResponse(animeRepository.save(anime));
+        return animeMapper.toAnimeResponse(animeJpaRepository.save(anime));
     }
 
     @Override
     public void deleteAnime(String id) {
-        animeRepository.deleteById(id);
+        animeJpaRepository.deleteById(id);
     }
 
     @Override
     public List<AnimeResponse> findAnimeByName(String name) {
-        return animeRepository.findByNameContaining(name)
+        return animeJpaRepository.findByNameContaining(name)
                 .stream()
                 .map(animeMapper::toAnimeResponse)
                 .toList();
@@ -112,8 +112,8 @@ public class AnimeService implements AnimeServiceInterface {
 
         if (topAnimes == null) {
             List<Anime> animes = switch (type) {
-                case "views" -> animeRepository.findTop10ByOrderByViewsDesc();
-                case "rate" -> animeRepository.findTop10ByOrderByRateDesc();
+                case "views" -> animeJpaRepository.findTop10ByOrderByViewsDesc();
+                case "rate" -> animeJpaRepository.findTop10ByOrderByRateDesc();
                 default -> throw new IllegalStateException("Unexpected value: " + type);
             };
 
