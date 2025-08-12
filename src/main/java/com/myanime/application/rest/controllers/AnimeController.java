@@ -8,12 +8,16 @@ import com.myanime.application.rest.requests.anime.AnimeUpdateRequest;
 import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
+import com.myanime.domain.port.input.AnimeUC;
 import com.myanime.domain.service.anime.AnimeServiceInterface;
 import com.myanime.domain.service.elasticsearch.anime.AnimeESService;
+import com.myanime.infrastructure.models.AnimeModel;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/animes")
 public class AnimeController {
-    AnimeServiceInterface animeService;
+    AnimeUC animeUC;
     AnimeESService animeESService;
 
     // add anime into db
@@ -33,7 +37,7 @@ public class AnimeController {
     public ApiResponse<AnimeResponse> createAnime(
             @ModelAttribute @Valid AnimeCreationRequest request) {
         return ApiResponse.<AnimeResponse>builder()
-                .data(animeService.createAnime(request))
+                .data(animeUC.createAnime(request))
                 .build();
     }
 
@@ -43,7 +47,7 @@ public class AnimeController {
         if (request == null || request.isEmpty()) {
             throw new AppException(ErrorCode.LIST_EMPTY);
         }
-        animeService.createAnime(request);
+        animeUC.createAnime(request);
 
         return ApiResponse.<Void>builder()
                 .message("Create anime successfully")
@@ -57,14 +61,14 @@ public class AnimeController {
             @RequestParam(required = false, defaultValue = "30") int size
     ) throws JsonProcessingException {
         ApiResponse<PageResponse<AnimeResponse>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.getAnimes(page, size));
+        apiResponse.setData(animeUC.getAnimes(page, size));
         return apiResponse;
     }
 
     @GetMapping("/{id}")
     public ApiResponse<AnimeResponse> getAnime(@PathVariable("id") String id) {
         ApiResponse<AnimeResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.getAnime(id));
+        apiResponse.setData(animeUC.getAnime(id));
         return apiResponse;
     }
 
@@ -76,20 +80,14 @@ public class AnimeController {
             type = "views";
         }
         ApiResponse<List<AnimeResponse>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.getTopAnimes(type));
+        apiResponse.setData(animeUC.getTopAnimes(type));
         return apiResponse;
     }
 
     @GetMapping("/search")
-    public ApiResponse<List<AnimeResponse>> search(
-            @RequestParam String name,
-            @RequestParam(defaultValue = "true") boolean es) {
-        ApiResponse<List<AnimeResponse>> apiResponse = new ApiResponse<>();
-
-        if (!es)
-            apiResponse.setData(animeService.findAnimeByName(name));
-        else
-            apiResponse.setData(animeESService.searchByNameOrDesc(name));
+    public ApiResponse<PageResponse<AnimeModel>> search(@RequestParam String name, Pageable pageable) {
+        ApiResponse<PageResponse<AnimeModel>> apiResponse = new ApiResponse<>();
+        apiResponse.setData(animeUC.search(name, pageable));
 
         return apiResponse;
     }
@@ -98,13 +96,13 @@ public class AnimeController {
     @PutMapping("/{id}")
     public ApiResponse<AnimeResponse> updateAnime(@PathVariable("id") String id, @ModelAttribute AnimeUpdateRequest request) {
         ApiResponse<AnimeResponse> apiResponse = new ApiResponse<>();
-        apiResponse.setData(animeService.updateAnime(id, request));
+        apiResponse.setData(animeUC.updateAnime(id, request));
         return apiResponse;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteAnime(@PathVariable String id) {
-        animeService.deleteAnime(id);
+        animeUC.deleteAnime(id);
     }
 }

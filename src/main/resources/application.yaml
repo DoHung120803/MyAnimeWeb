@@ -5,8 +5,8 @@ server:
 
 spring:
   elasticsearch:
-    uris: https://localhost:9200
-    username: elastic
+    uris: ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}
+    username: ${ELASTICSEARCH_USERNAME}
     password: ${ELASTICSEARCH_PASSWORD}
   datasource:
     url: ${MYSQL_URL}

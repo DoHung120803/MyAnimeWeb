@@ -1,6 +1,8 @@
 package com.myanime.infrastructure.jparepos.jpa;
 
 import com.myanime.infrastructure.entities.jpa.Anime;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,7 +11,7 @@ import java.util.List;
 
 public interface AnimeJpaRepository extends JpaRepository<Anime, String> {
 
-    List<Anime> findByNameContaining(String name); // where name like '%name%'
+    Page<Anime> findByNameContaining(String name, Pageable pageable); // where name like '%name%'
 
 //    List<Anime> findByNameIn(List<String> list); // where name like '%name%'
 //    Page<Anime> findByNameContaining(String name, Pageable pageable); // where name like '%name%'

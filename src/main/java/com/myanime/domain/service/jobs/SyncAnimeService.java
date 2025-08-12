@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.myanime.common.constants.ElasticsearchConstant.ANIME_INDEX_NAME;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,7 +24,6 @@ public class SyncAnimeService implements SyncAnimeUC {
     private final AnimeRepository animeRepository;
 
     private static final Integer LIMIT = 200;
-    private static final String INDEX_NAME = "animes";
     private final ESDocument esDocument;
 
     @Override
@@ -58,7 +59,7 @@ public class SyncAnimeService implements SyncAnimeUC {
 
                     bulkRequest.addBulkRequestUpdate(
                             id,
-                            INDEX_NAME,
+                            ANIME_INDEX_NAME,
                             mapData
                     );
                 }
