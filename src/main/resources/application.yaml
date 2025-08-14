@@ -59,3 +59,14 @@ admin:
 
 jwt:
   signerKey: ${JWT_SIGNER_KEY}
+
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST}
+  port: ${ELASTICSEARCH_PORT}
+  username: ${ELASTICSEARCH_USERNAME}
+  password: ${ELASTICSEARCH_PASSWORD}
+cron:
+  sync-anime-disable: ${CRON_SYNC_ANIME_DISABLE:false}
+
+sentry:
+  dsn: ${SENTRY_DSN}

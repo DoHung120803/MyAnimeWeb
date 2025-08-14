@@ -4,6 +4,7 @@ import com.myanime.application.rest.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
@@ -19,7 +21,7 @@ import org.springframework.web.multipart.MultipartException;
 public class GlobalExceptionHandler {
     ApiResponse apiResponse = new ApiResponse();
 
-    @ExceptionHandler(value =  Exception.class)
+    @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse> handleRuntimeException(Exception exception) {
 
         log.info("Exception: ", exception);
@@ -131,7 +133,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = MaxUploadSizeExceededException.class)
-    ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceededException () {
+    ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceededException() {
         ErrorCode errorCode = ErrorCode.FILE_SIZE_INVALID;
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
@@ -140,6 +142,15 @@ public class GlobalExceptionHandler {
                         .message(errorCode.getMessage())
                         .build()
         );
+    }
+
+    @ExceptionHandler(value = BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseEntity<ApiResponse<Object>> handleBadRequestException(BadRequestException exception) {
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.builder()
+                        .message(exception.getMessage())
+                        .build());
     }
 
     private void setApiResponse(int code, String message) {
