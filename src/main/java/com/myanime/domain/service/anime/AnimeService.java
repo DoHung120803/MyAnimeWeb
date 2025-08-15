@@ -1,6 +1,8 @@
 package com.myanime.domain.service.anime;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.myanime.domain.port.input.AnimeUC;
+import com.myanime.domain.port.output.AnimeRepository;
 import com.myanime.infrastructure.entities.jpa.Anime;
 import com.myanime.common.exceptions.AppException;
 import com.myanime.common.exceptions.ErrorCode;
@@ -11,6 +13,7 @@ import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.infrastructure.jparepos.jpa.AnimeJpaRepository;
 import com.myanime.domain.service.redis.anime.AnimeRedisService;
+import com.myanime.infrastructure.models.AnimeModel;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,11 +29,12 @@ import java.util.concurrent.ExecutorService;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class AnimeService implements AnimeServiceInterface {
+public class AnimeService implements AnimeUC {
     AnimeJpaRepository animeJpaRepository;
     AnimeMapper animeMapper;
     ExecutorService executorService;
     AnimeRedisService animeRedisService;
+    AnimeRepository animeRepository;
 
     @Override
     public AnimeResponse createAnime(AnimeCreationRequest request) {
@@ -99,11 +103,16 @@ public class AnimeService implements AnimeServiceInterface {
     }
 
     @Override
-    public List<AnimeResponse> findAnimeByName(String name) {
-        return animeJpaRepository.findByNameContaining(name)
-                .stream()
-                .map(animeMapper::toAnimeResponse)
-                .toList();
+    public PageResponse<AnimeModel> search(String name, Pageable pageable) {
+        Page<AnimeModel> page = animeRepository.search(name, pageable);
+
+        return PageResponse.<AnimeModel>builder()
+                .content(page.getContent())
+                .currentPage(page.getNumber() + 1) // Page number is zero-based
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
     }
 
     @Override
