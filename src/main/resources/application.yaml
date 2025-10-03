@@ -65,8 +65,19 @@ elasticsearch:
   port: ${ELASTICSEARCH_PORT}
   username: ${ELASTICSEARCH_USERNAME}
   password: ${ELASTICSEARCH_PASSWORD}
+
 cron:
   sync-anime-disable: ${CRON_SYNC_ANIME_DISABLE:false}
 
 sentry:
   dsn: ${SENTRY_DSN}
+
+kafka:
+    brokers: ${KAFKA_BOOTSTRAP_SERVERS}
+    username: ${KAFKA_USERNAME}
+    password: ${KAFKA_PASSWORD}
+    consumer:
+      batch-size: ${CONSUMER_BATCH_SIZE:200}
+      concurrency: ${CONSUMER_CONCURRENCY:1}
+    auto-commit-enable: ${KAFKA_DATA_ENABLE_AUTO_COMMIT:false}
+
