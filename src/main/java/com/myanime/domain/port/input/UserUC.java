@@ -1,11 +1,11 @@
-package com.myanime.domain.service.user;
+package com.myanime.domain.port.input;
 
 import com.myanime.application.rest.requests.user.UserCreationRequest;
 import com.myanime.application.rest.requests.user.UserUpdateRequest;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.application.rest.responses.UserResponse;
 
-public interface UserServiceInterface {
+public interface UserUC {
     UserResponse createUser(UserCreationRequest request);
     PageResponse<UserResponse> getUsers(int page, int size);
     UserResponse getUser(String id);

@@ -6,7 +6,7 @@ import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.application.rest.requests.banner.BannerCreationRequest;
 import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.application.rest.responses.BannerResponse;
-import com.myanime.domain.service.banner.BannerService;
+import com.myanime.domain.port.input.BannerUC;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("api/v1/banners")
 @RequiredArgsConstructor
 public class BannerController {
-    private final BannerService bannerService;
+    private final BannerUC bannerService;
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
