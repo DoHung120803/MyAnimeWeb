@@ -3,6 +3,7 @@ package com.myanime.domain.service.banner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.infrastructure.cache.CacheComponent;
 import com.myanime.infrastructure.entities.jpa.Banner;
 import com.myanime.common.mapper.BannerMapper;
@@ -54,9 +55,10 @@ public class BannerServiceImpl implements BannerService {
             });
         }
 
-        List<BannerResponse> bannerResponses = bannerRepository.findAll().stream()
-                .map(bannerMapper::toBannerResponse)
-                .toList();
+        List<BannerResponse> bannerResponses = ModelMapperUtil.mapList(
+                bannerRepository.findAll(),
+                BannerResponse.class
+        );
 
         String json = objectMapper.writeValueAsString(bannerResponses);
         cacheComponent.set(CACHE_PREFIX, json, 1L, TimeUnit.HOURS);

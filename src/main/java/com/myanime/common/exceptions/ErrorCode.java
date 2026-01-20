@@ -44,6 +44,9 @@ public enum ErrorCode {
     ANIME_THUMBNAIL_INVALID(1004, "Thumbnail của anime không được để trống", HttpStatus.BAD_REQUEST),
     ANIME_NOT_FOUND(1005, "Không tìm thấy anime!", HttpStatus.NOT_FOUND),
 
+    GENRE_EXISTED(1021, "Thể loại đã tồn tại!", HttpStatus.BAD_REQUEST),
+    GENRE_NOT_FOUND(1022, "Không tìm thấy thể loại!", HttpStatus.NOT_FOUND),
+
     USER_EXISTED(1001, "Người dùng đã tồn tại!", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(1002, "Tên người dùng phải có ít nhất 3 ký tự!", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(1003, "Mật khẩu phải có ít nhất 6 ký tự", HttpStatus.BAD_REQUEST),

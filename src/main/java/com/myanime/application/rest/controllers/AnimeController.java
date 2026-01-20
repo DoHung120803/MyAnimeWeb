@@ -9,14 +9,11 @@ import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.domain.port.input.AnimeUC;
-import com.myanime.domain.service.anime.AnimeServiceInterface;
-import com.myanime.domain.service.elasticsearch.anime.AnimeESService;
 import com.myanime.infrastructure.models.AnimeModel;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +26,6 @@ import java.util.List;
 @RequestMapping("api/v1/animes")
 public class AnimeController {
     AnimeUC animeUC;
-    AnimeESService animeESService;
 
     // add anime into db
     @PreAuthorize("hasRole('ADMIN')")

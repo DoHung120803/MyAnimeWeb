@@ -4,10 +4,6 @@ server:
     context-path: /
 
 spring:
-  elasticsearch:
-    uris: ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}
-    username: ${ELASTICSEARCH_USERNAME}
-    password: ${ELASTICSEARCH_PASSWORD}
   datasource:
     url: ${MYSQL_URL}
     driverClassName: "com.mysql.cj.jdbc.Driver"
@@ -81,3 +77,12 @@ kafka:
       concurrency: ${CONSUMER_CONCURRENCY:1}
     auto-commit-enable: ${KAFKA_DATA_ENABLE_AUTO_COMMIT:false}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health,info,metric
+  prometheus:
+    metrics:
+      export:
+        enabled: true
