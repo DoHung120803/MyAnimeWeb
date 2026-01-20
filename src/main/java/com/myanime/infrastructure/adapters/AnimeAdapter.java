@@ -57,8 +57,6 @@ public class AnimeAdapter implements AnimeRepository {
             page = searchByES(name, pageable);
         } catch (Exception e) {
             log.error(">>> Error searching anime by elasticsearch: {}", name, e);
-            Sentry.captureException(e);
-
             page = searchByDB(name, pageable);
         }
 

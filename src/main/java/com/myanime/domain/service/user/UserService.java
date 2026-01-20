@@ -1,5 +1,8 @@
 package com.myanime.domain.service.user;
 
+import com.myanime.common.utils.JsonUtil;
+import com.myanime.common.utils.ModelMapperUtil;
+import com.myanime.domain.port.input.UserUC;
 import com.myanime.infrastructure.entities.jpa.Role;
 import com.myanime.infrastructure.entities.jpa.User;
 import com.myanime.common.exceptions.AppException;
@@ -14,11 +17,14 @@ import com.myanime.infrastructure.jparepos.jpa.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,11 +37,16 @@ import java.util.HashSet;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class UserService implements UserServiceInterface {
+public class UserService implements UserUC {
     UserRepository userRepository;
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${kafka.topic.registration-notify}")
+    @NonFinal
+    String registrationTopic;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -49,7 +60,10 @@ public class UserService implements UserServiceInterface {
 
         user.setRoles(roles);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+//        UserResponse userResponse = ModelMapperUtil.mapper(userRepository.save(user), UserResponse.class);
+        kafkaTemplate.send(registrationTopic, JsonUtil.toString(user));
+
+        return  null;
     }
 
     //  we can use  @PreAuthorize("hasAnyAuthority('permission')")

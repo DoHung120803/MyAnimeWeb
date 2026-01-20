@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /
+    context-path:
 
 spring:
   datasource:
@@ -15,11 +15,8 @@ spring:
     show-sql: true
 
   kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: "cdc-consumer-group"
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    admin:
+      auto-create: false
 
   data:
     redis:
@@ -76,6 +73,21 @@ kafka:
       batch-size: ${CONSUMER_BATCH_SIZE:200}
       concurrency: ${CONSUMER_CONCURRENCY:1}
     auto-commit-enable: ${KAFKA_DATA_ENABLE_AUTO_COMMIT:false}
+    topic:
+      registration-notify: ${KAFKA_TOPIC_REGISTER_NOTIFY:kafka.topic.test.registration}
+
+feign:
+  client:
+    email-host: ${FEIGN_CLIENT_EMAIL_HOST:https://api.brevo.com}
+
+email:
+  api:
+    key: ${EMAIL_API_KEY}
+
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN}
+    chat-id: ${TELEGRAM_CHAT_ID}
 
 management:
   endpoints:

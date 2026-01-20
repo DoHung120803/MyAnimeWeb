@@ -25,7 +25,19 @@ public class User {
     LocalDate dob;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    String email;
 
     @ManyToMany
     Set<Role> roles;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
