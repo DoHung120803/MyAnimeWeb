@@ -35,7 +35,10 @@ public class SecurityConfig {
             "api/v1/animes/top-animes",
             "api/v1/animes",
             "api/v1/animes/search",
-            "api/v1/upload"
+            "api/v1/upload",
+            "/actuator/health",
+            "/actuator/prometheus",
+            "/api/v1/genres",
     };
 
     @Value("${jwt.signerKey}")

@@ -10,4 +10,5 @@ public class BannerResponse {
     private String imageUrl;
     private String description;
     private String name;
+    private String nameImage;
 }
