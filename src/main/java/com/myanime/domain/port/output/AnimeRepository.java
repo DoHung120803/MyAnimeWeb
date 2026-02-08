@@ -1,6 +1,6 @@
 package com.myanime.domain.port.output;
 
-import com.myanime.infrastructure.models.AnimeModel;
+import com.myanime.domain.models.AnimeModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,10 +1,10 @@
 package com.myanime.domain.service.permission;
 
-import com.myanime.infrastructure.entities.jpa.Permission;
+import com.myanime.infrastructure.entities.Permission;
 import com.myanime.common.mapper.PermissionMapper;
 import com.myanime.application.rest.requests.permission.PermissionRequest;
 import com.myanime.application.rest.responses.PermissionResponse;
-import com.myanime.infrastructure.jparepos.jpa.PermissionRepository;
+import com.myanime.infrastructure.jparepos.PermissionRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

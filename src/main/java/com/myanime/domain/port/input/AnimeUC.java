@@ -5,7 +5,7 @@ import com.myanime.application.rest.requests.anime.AnimeCreationRequest;
 import com.myanime.application.rest.requests.anime.AnimeUpdateRequest;
 import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
-import com.myanime.infrastructure.models.AnimeModel;
+import com.myanime.domain.models.AnimeModel;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

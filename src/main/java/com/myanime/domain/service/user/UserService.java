@@ -1,10 +1,10 @@
 package com.myanime.domain.service.user;
 
 import com.myanime.common.utils.JsonUtil;
-import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.domain.port.input.UserUC;
-import com.myanime.infrastructure.entities.jpa.Role;
-import com.myanime.infrastructure.entities.jpa.User;
+import com.myanime.infrastructure.configurations.securities.utils.JwtUtil;
+import com.myanime.infrastructure.entities.Role;
+import com.myanime.infrastructure.entities.User;
 import com.myanime.common.exceptions.AppException;
 import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.common.mapper.UserMapper;
@@ -12,8 +12,8 @@ import com.myanime.application.rest.requests.user.UserCreationRequest;
 import com.myanime.application.rest.requests.user.UserUpdateRequest;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.application.rest.responses.UserResponse;
-import com.myanime.infrastructure.jparepos.jpa.RoleRepository;
-import com.myanime.infrastructure.jparepos.jpa.UserRepository;
+import com.myanime.infrastructure.jparepos.RoleRepository;
+import com.myanime.infrastructure.jparepos.UserJpaRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -38,7 +38,7 @@ import java.util.HashSet;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class UserService implements UserUC {
-    UserRepository userRepository;
+    UserJpaRepository userJpaRepository;
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
@@ -49,7 +49,7 @@ public class UserService implements UserUC {
     String registrationTopic;
 
     public UserResponse createUser(UserCreationRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userJpaRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
         User user = userMapper.toUser(request);
@@ -72,7 +72,7 @@ public class UserService implements UserUC {
         Pageable pageable = PageRequest.of(
                 page - 1, size, Sort.by(Sort.Direction.ASC, "username")
         );
-        Page<User> users = userRepository.findAll(pageable);
+        Page<User> users = userJpaRepository.findAll(pageable);
 
         return PageResponse.<UserResponse>builder()
                 .content(users.stream()
@@ -88,22 +88,22 @@ public class UserService implements UserUC {
     @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
     public UserResponse getUser(String id) {
         log.info("in postauthorize method");
-        return userMapper.toUserResponse(userRepository.findById(id)
+        return userMapper.toUserResponse(userJpaRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
     }
 
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
-        String name = context.getAuthentication().getName();
+        String userId = context.getAuthentication().getName();
 
-        User user = userRepository.findByUsername(name)
+        User user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return userMapper.toUserResponse(user);
     }
 
     public UserResponse updateUser(String id, UserUpdateRequest request) {
-        User user = userRepository.findById(id)
+        User user = userJpaRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         userMapper.updateUser(user, request);
@@ -112,11 +112,11 @@ public class UserService implements UserUC {
 //        var roles = roleRepository.findAllById(request.getRoles());
 //        user.setRoles(new HashSet<>(roles));
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        return userMapper.toUserResponse(userJpaRepository.save(user));
     }
 
     public void deleteUser(String id) {
-        userRepository.deleteById(id);
+        userJpaRepository.deleteById(id);
     }
 
 }

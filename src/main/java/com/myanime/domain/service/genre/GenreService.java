@@ -8,7 +8,7 @@ import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.domain.port.input.GenreUC;
 import com.myanime.domain.port.output.GenreRepository;
-import com.myanime.infrastructure.entities.jpa.Genre;
+import com.myanime.infrastructure.entities.Genre;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

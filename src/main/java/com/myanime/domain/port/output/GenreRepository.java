@@ -1,6 +1,6 @@
 package com.myanime.domain.port.output;
 
-import com.myanime.infrastructure.entities.jpa.Genre;
+import com.myanime.infrastructure.entities.Genre;
 
 import java.util.List;
 import java.util.Optional;

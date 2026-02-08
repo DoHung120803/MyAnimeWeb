@@ -4,7 +4,7 @@ import com.myanime.domain.port.input.job.SyncAnimeUC;
 import com.myanime.domain.port.output.AnimeRepository;
 import com.myanime.infrastructure.elasticsearch.Bulk;
 import com.myanime.infrastructure.elasticsearch.ESDocument;
-import com.myanime.infrastructure.models.AnimeModel;
+import com.myanime.domain.models.AnimeModel;
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -56,30 +57,24 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse> handleValidation(MethodArgumentNotValidException exception) {
-        String enumKey = exception.getFieldError().getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.INVALID_KEY;
-
-        try {
-            errorCode = ErrorCode.valueOf(enumKey);
-        } catch (IllegalArgumentException e) {
-
+    @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponse<Object>> handleBindException(BindException e) {
+        if (e.hasErrors()) {
+            return ResponseEntity.badRequest().body(
+                    ApiResponse.builder().message(e.getAllErrors().getFirst().getDefaultMessage()).build()
+            );
         }
-
-        setApiResponse(errorCode.getCode(), errorCode.getMessage());
-
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.badRequest().body(
+                ApiResponse.builder().message("Yêu cầu không hợp lệ").build()
+        );
     }
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     ResponseEntity<ApiResponse<Object>> handleHttpMessageNotReadableException() {
-        ErrorCode errorCode = ErrorCode.REQUEST_BODY_EMPTY;
-
-        return ResponseEntity.status(errorCode.getStatusCode()).body(
+        return ResponseEntity.badRequest().body(
                 ApiResponse.builder()
-                        .code(errorCode.getCode())
-                        .message(errorCode.getMessage())
+                        .message("Kiểu dữ liệu không hợp lệ")
                         .build()
         );
     }

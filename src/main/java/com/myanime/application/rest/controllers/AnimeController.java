@@ -9,7 +9,7 @@ import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.application.rest.responses.AnimeResponse;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.domain.port.input.AnimeUC;
-import com.myanime.infrastructure.models.AnimeModel;
+import com.myanime.domain.models.AnimeModel;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

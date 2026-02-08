@@ -5,7 +5,6 @@ import com.myanime.application.rest.requests.user.UserUpdateRequest;
 import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.application.rest.responses.UserResponse;
-import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.domain.port.input.UserUC;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
