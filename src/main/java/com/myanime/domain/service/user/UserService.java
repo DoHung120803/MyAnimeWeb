@@ -1,17 +1,17 @@
 package com.myanime.domain.service.user;
 
-import com.myanime.common.utils.JsonUtil;
-import com.myanime.domain.port.input.UserUC;
-import com.myanime.infrastructure.configurations.securities.utils.JwtUtil;
-import com.myanime.infrastructure.entities.Role;
-import com.myanime.infrastructure.entities.User;
-import com.myanime.common.exceptions.AppException;
-import com.myanime.common.exceptions.ErrorCode;
-import com.myanime.common.mapper.UserMapper;
 import com.myanime.application.rest.requests.user.UserCreationRequest;
 import com.myanime.application.rest.requests.user.UserUpdateRequest;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.application.rest.responses.UserResponse;
+import com.myanime.common.exceptions.AppException;
+import com.myanime.common.exceptions.ErrorCode;
+import com.myanime.common.mapper.UserMapper;
+import com.myanime.common.utils.JsonUtil;
+import com.myanime.common.utils.ModelMapperUtil;
+import com.myanime.domain.port.input.UserUC;
+import com.myanime.infrastructure.entities.Role;
+import com.myanime.infrastructure.entities.User;
 import com.myanime.infrastructure.jparepos.RoleRepository;
 import com.myanime.infrastructure.jparepos.UserJpaRepository;
 import lombok.AccessLevel;
@@ -25,8 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,7 +50,7 @@ public class UserService implements UserUC {
         if (userJpaRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
-        User user = userMapper.toUser(request);
+        User user = ModelMapperUtil.mapper(request, User.class);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
@@ -60,17 +58,17 @@ public class UserService implements UserUC {
 
         user.setRoles(roles);
 
-//        UserResponse userResponse = ModelMapperUtil.mapper(userRepository.save(user), UserResponse.class);
-        kafkaTemplate.send(registrationTopic, JsonUtil.toString(user));
+        UserResponse userResponse = ModelMapperUtil.mapper(userJpaRepository.save(user), UserResponse.class);
+//        kafkaTemplate.send(registrationTopic, JsonUtil.toString(user));
 
-        return  null;
+        return null;
     }
 
     //  we can use  @PreAuthorize("hasAnyAuthority('permission')")
-    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
     public PageResponse<UserResponse> getUsers(int page, int size) {
         Pageable pageable = PageRequest.of(
-                page - 1, size, Sort.by(Sort.Direction.ASC, "username")
+                page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt")
         );
         Page<User> users = userJpaRepository.findAll(pageable);
 
@@ -85,10 +83,15 @@ public class UserService implements UserUC {
                 .build();
     }
 
-    @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
+    //    @PostAuthorize("returnObject.username == authentication.name or hasRole('ADMIN')")
     public UserResponse getUser(String id) {
         log.info("in postauthorize method");
         return userMapper.toUserResponse(userJpaRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
+    }
+
+    public UserResponse getUserByUsername(String username) {
+        return userMapper.toUserResponse(userJpaRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
     }
 

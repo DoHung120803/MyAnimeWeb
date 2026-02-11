@@ -17,8 +17,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // Định cấu hình Simple Broker với điểm đến "/conversation"
-        registry.enableSimpleBroker("/conversation");
+        // Định cấu hình Simple Broker với điểm đến "/conversation" và "/notification"
+        registry.enableSimpleBroker("/conversation", "/notification");
 
         // Đặt tiền tố cho các điểm đến ứng dụng
         registry.setApplicationDestinationPrefixes("/app");
@@ -26,7 +26,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat") // Đăng ký điểm cuối STOMP tại "/chat"
+        registry.addEndpoint("/ws") // Đăng ký điểm cuối STOMP tại "/chat"
                 .setAllowedOriginPatterns("*") // Cho phép tất cả origins kể cả khi withCredentials=true
                 .withSockJS(); // Kích hoạt SockJS như một phương thức dự phòng
     }

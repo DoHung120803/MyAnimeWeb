@@ -40,7 +40,8 @@ public class SecurityConfig {
             "/actuator/health",
             "/actuator/prometheus",
             "/api/v1/genres",
-            "/chat/**", // WebSocket endpoint (xác thực qua STOMP header)
+            "/ws/**", // WebSocket endpoint (xác thực qua STOMP header)
+            "/api/v1/users/get-all"
     };
 
     @Value("${jwt.signerKey}")

@@ -29,8 +29,8 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/get-all")
     public ApiResponse<PageResponse<UserResponse>> getUsers(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int size
@@ -44,6 +44,13 @@ public class UserController {
     public ApiResponse<UserResponse> getUser(@PathVariable String id) {
         return ApiResponse.<UserResponse>builder()
                 .data(userUC.getUser(id))
+                .build();
+    }
+
+    @GetMapping("/username/{username}")
+    public ApiResponse<UserResponse> getUserByUsername(@PathVariable String username) {
+        return ApiResponse.<UserResponse>builder()
+                .data(userUC.getUserByUsername(username))
                 .build();
     }
 

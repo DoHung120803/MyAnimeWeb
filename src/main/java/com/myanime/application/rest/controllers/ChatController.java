@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,8 @@ import java.security.Principal;
 public class ChatController {
 
     private final ChatUC chatUC;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     @MessageMapping("/send-message")
     @SendTo("/conversation")
@@ -41,7 +44,7 @@ public class ChatController {
         typingEvent.setConversationId(request.getConversationId());
         typingEvent.setUserId(principal.getName());
         typingEvent.setIsTyping(request.getIsTyping());
-        
+
         return ApiResponse.<TypingEventModel>builder()
                 .message("Typing status updated")
                 .data(typingEvent)

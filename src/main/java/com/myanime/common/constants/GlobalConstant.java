@@ -10,7 +10,8 @@ public class GlobalConstant {
     }
 
     public static final List<Short> SUPPORTED_NOTIFY_TYPES = List.of(
-            NotifyType.EMAIL.getValue(),
-            NotifyType.TELEGRAM.getValue()
+//            NotifyType.EMAIL.getValue(),
+//            NotifyType.TELEGRAM.getValue(),
+            NotifyType.IN_APP.getValue()
     );
 }

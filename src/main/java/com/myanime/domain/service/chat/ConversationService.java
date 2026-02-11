@@ -5,6 +5,7 @@ import com.myanime.application.rest.requests.chat.GetDirectConversationRequest;
 import com.myanime.application.rest.requests.chat.GetMessageRequest;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.common.exceptions.BadRequestException;
+import com.myanime.common.utils.AuthUtil;
 import com.myanime.domain.enums.ConversationType;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.models.chats.ConversationMemberModel;
@@ -104,7 +105,7 @@ public class ConversationService implements ConversationUC {
 
     @Override
     public Object getDirectConversationMessages(GetDirectConversationRequest request, Pageable pageable) {
-        String firstUserId = request.getFirstUserId();
+        String firstUserId = AuthUtil.getCurrentUserId();
         String secondUserId = request.getSecondUserId();
 
         Long conversationId = conversationRepository.getIdByDirectKey(generateHash(firstUserId, secondUserId));
