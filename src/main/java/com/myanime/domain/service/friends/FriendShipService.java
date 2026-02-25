@@ -28,8 +28,6 @@ public class FriendShipService implements FriendShipUC {
     private final UserRepository userRepository;
     private final FriendShipRepository friendShipRepository;
     private final PostNotificationService postNotificationService;
-    private final ExecutorService executorService;
-
 
     @Override
     public void addFriend(AddFriendRequest request) throws BadRequestException {
@@ -46,6 +44,9 @@ public class FriendShipService implements FriendShipUC {
         friendShipModel.setLowUserId(lowerId);
         friendShipModel.setHighUserId(higherId);
         friendShipModel.setStatus(FriendShipStatus.SENT.getCode());
+
+        if (friendShipRepository.existsByUserIds(lowerId, higherId))
+            throw new BadRequestException("Bạn đã gửi lời mời kết bạn hoặc đã là bạn bè với người này");
 
         FriendShipModel saved = friendShipRepository.save(friendShipModel);
 

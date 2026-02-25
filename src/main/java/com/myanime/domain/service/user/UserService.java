@@ -7,9 +7,10 @@ import com.myanime.application.rest.responses.UserResponse;
 import com.myanime.common.exceptions.AppException;
 import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.common.mapper.UserMapper;
-import com.myanime.common.utils.JsonUtil;
 import com.myanime.common.utils.ModelMapperUtil;
+import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.input.UserUC;
+import com.myanime.domain.port.output.UserRepository;
 import com.myanime.infrastructure.entities.Role;
 import com.myanime.infrastructure.entities.User;
 import com.myanime.infrastructure.jparepos.RoleRepository;
@@ -28,6 +29,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 
@@ -41,6 +43,7 @@ public class UserService implements UserUC {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     KafkaTemplate<String, String> kafkaTemplate;
+    UserRepository userRepository;
 
     @Value("${kafka.topic.registration-notify}")
     @NonFinal
@@ -120,6 +123,24 @@ public class UserService implements UserUC {
 
     public void deleteUser(String id) {
         userJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public PageResponse<UserModel> searchUsers(String keyword, Pageable pageable) {
+        PageResponse<UserModel> response = new PageResponse<>();
+
+        if (!StringUtils.hasText(keyword))
+            return response;
+
+        Page<UserModel> results = userRepository.search(keyword, pageable);
+
+        response.setContent(results.getContent());
+        response.setCurrentPage(results.getNumber() + 1);
+        response.setPageSize(results.getSize());
+        response.setTotalElements(results.getTotalElements());
+        response.setTotalPages(results.getTotalPages());
+
+        return response;
     }
 
 }

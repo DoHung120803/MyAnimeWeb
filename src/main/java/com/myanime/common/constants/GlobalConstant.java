@@ -14,4 +14,11 @@ public class GlobalConstant {
 //            NotifyType.TELEGRAM.getValue(),
             NotifyType.IN_APP.getValue()
     );
+
+    public static class ESIndex {
+        private  ESIndex() {}
+
+        public static final String ANIMES = "animes";
+        public static final String USERS = "users";
+    }
 }

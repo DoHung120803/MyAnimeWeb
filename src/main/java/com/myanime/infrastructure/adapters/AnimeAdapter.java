@@ -1,6 +1,7 @@
 package com.myanime.infrastructure.adapters;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.myanime.common.constants.GlobalConstant;
 import com.myanime.common.utils.JsonUtil;
 import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.domain.port.output.AnimeRepository;
@@ -25,8 +26,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.myanime.common.constants.ElasticsearchConstant.ANIME_INDEX_NAME;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -64,7 +64,7 @@ public class AnimeAdapter implements AnimeRepository {
     }
 
     private Page<AnimeModel> searchByES(String name, Pageable pageable) throws IOException {
-        SearchRequest searchRequest = new SearchRequest(ANIME_INDEX_NAME);
+        SearchRequest searchRequest = new SearchRequest(GlobalConstant.ESIndex.ANIMES);
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder()
                 .query(QueryBuilders.matchQuery("name", name)
@@ -73,7 +73,7 @@ public class AnimeAdapter implements AnimeRepository {
                 .from((int) pageable.getOffset())  // offset = page * size
                 .size(pageable.getPageSize())
                 .fetchSource(true)        // Chỉ lấy _source
-                .trackScores(false);      // Không cần _score
+                .trackScores(true);      // Không cần _score
 
         searchRequest.source(sourceBuilder);
 
@@ -81,11 +81,11 @@ public class AnimeAdapter implements AnimeRepository {
 
         List<AnimeModel> content = new ArrayList<>();
         for (SearchHit hit : response.getHits().getHits()) {
-            AnimeModel anime = JsonUtil.jsonToObject(hit.getSourceAsString(), new TypeReference<AnimeModel>() {});
+            AnimeModel anime = JsonUtil.jsonToObject(hit.getSourceAsString(), new TypeReference<>() {});
             content.add(anime);
         }
 
-        long totalHits = response.getHits().getTotalHits().value;
+        long totalHits = Objects.requireNonNull(response.getHits().getTotalHits()).value;
 
         return new PageImpl<>(content, pageable, totalHits);
     }

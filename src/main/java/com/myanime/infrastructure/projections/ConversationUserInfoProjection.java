@@ -5,5 +5,6 @@ public interface ConversationUserInfoProjection {
     String getFirstName();
     String getLastName();
     String getAvtUrl();
+    String getUsername();
 }
 

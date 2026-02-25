@@ -77,7 +77,10 @@ public class AnimeService implements AnimeUC {
                     .totalElements(response.getTotalElements())
                     .totalPages(response.getTotalPages())
                     .build();
-            animeRedisService.saveAllAnime(pageResponse);
+
+            if (page <= 3 && size <= 50) { // chỉ cache 3 trang đầu tiên và mỗi trang tối đa 50 anime để tránh cache quá nhiều dữ liệu
+                animeRedisService.saveAllAnime(pageResponse);
+            }
         }
         return pageResponse;
     }

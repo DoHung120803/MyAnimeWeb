@@ -41,7 +41,8 @@ public class SecurityConfig {
             "/actuator/prometheus",
             "/api/v1/genres",
             "/ws/**", // WebSocket endpoint (xác thực qua STOMP header)
-            "/api/v1/users/get-all"
+            "/api/v1/users/get-all",
+            "/api/v1/users/search"
     };
 
     @Value("${jwt.signerKey}")

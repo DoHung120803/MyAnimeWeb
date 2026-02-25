@@ -61,6 +61,7 @@ elasticsearch:
 
 cron:
   sync-anime-disable: ${CRON_SYNC_ANIME_DISABLE:false}
+  sync-user-disable: ${CRON_SYNC_USER_DISABLE:false}
 
 sentry:
   dsn: ${SENTRY_DSN}
