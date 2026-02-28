@@ -61,6 +61,7 @@ elasticsearch:
 
 cron:
   sync-anime-disable: ${CRON_SYNC_ANIME_DISABLE:false}
+  sync-user-disable: ${CRON_SYNC_USER_DISABLE:false}
 
 sentry:
   dsn: ${SENTRY_DSN}
@@ -98,3 +99,12 @@ management:
     metrics:
       export:
         enabled: true
+
+media:
+  image:
+    resize:
+      flag: true
+      max-dimension: 1280
+    compress:
+      max-size: 512000
+      quality: 0.75f

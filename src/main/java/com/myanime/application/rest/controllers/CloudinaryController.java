@@ -1,7 +1,10 @@
 package com.myanime.application.rest.controllers;
 
+import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.common.exceptions.AppException;
+import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.common.exceptions.ErrorCode;
+import com.myanime.domain.dtos.MediaInfoDTO;
 import com.myanime.domain.service.cloudinary.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +19,14 @@ public class CloudinaryController {
     private final CloudinaryService cloudinaryService;
 
     @PostMapping("")
-    public String upload(@RequestParam String id, @RequestPart MultipartFile file) throws IOException {
-        if (id == null || id.isEmpty()) {
-            throw new AppException(ErrorCode.MISSING_REQUEST_PARAM);
-        }
-
+    public ApiResponse<MediaInfoDTO> upload(@RequestPart(required = false) String prefix, @RequestPart MultipartFile file) throws IOException, BadRequestException {
         if (file == null) {
-            throw new AppException(ErrorCode.FILE_EMPTY);
+            throw new BadRequestException("File không được để trống");
         }
 
-        return cloudinaryService.uploadFile(id, file);
+        return ApiResponse.<MediaInfoDTO>builder()
+                .data(cloudinaryService.uploadFile(file, prefix))
+                .build();
     }
 
     @DeleteMapping("")

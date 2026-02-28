@@ -20,4 +20,5 @@ public class UserResponse {
     LocalDate dob;
     Set<RoleResponse> roles;
     String email;
+    String avtUrl;
 }

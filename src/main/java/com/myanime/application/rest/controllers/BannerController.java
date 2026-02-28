@@ -2,6 +2,7 @@ package com.myanime.application.rest.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myanime.common.exceptions.AppException;
+import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.application.rest.requests.banner.BannerCreationRequest;
 import com.myanime.application.rest.responses.ApiResponse;
@@ -25,7 +26,7 @@ public class BannerController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<BannerResponse> createBanner(BannerCreationRequest request) throws IOException {
+    public ApiResponse<BannerResponse> createBanner(BannerCreationRequest request) throws IOException, BadRequestException {
         if (request.getImage() == null) {
             throw new AppException(ErrorCode.FILE_EMPTY);
         }

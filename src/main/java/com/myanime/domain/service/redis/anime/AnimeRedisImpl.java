@@ -34,11 +34,13 @@ public class AnimeRedisImpl implements AnimeRedisService {
 
     @Override
     public PageResponse<AnimeResponse> getAllAnime(int page, int size) throws JsonProcessingException {
+        if (page > 3 || size > 50) return null; // chỉ lấy cache tối đa 3 trang, mỗi trang tối đa 50 phần tử
+
         String key = getKey(GET_ALL_ANIME_KEYWORD, page, size);
         String data = cacheComponent.get(key); // json
 
         return data != null ?
-                objectMapper.readValue(data, new TypeReference<PageResponse<AnimeResponse>>() {
+                objectMapper.readValue(data, new TypeReference<>() {
                 })
                 : null;
     }
@@ -62,7 +64,7 @@ public class AnimeRedisImpl implements AnimeRedisService {
         String data = cacheComponent.get(key);
 
         return data != null ?
-                objectMapper.readValue(data, new TypeReference<List<AnimeResponse>>() {
+                objectMapper.readValue(data, new TypeReference<>() {
                 })
                 : null;
     }

@@ -1,8 +1,8 @@
 package com.myanime.infrastructure.adapters;
 
 import com.myanime.domain.port.output.GenreRepository;
-import com.myanime.infrastructure.entities.jpa.Genre;
-import com.myanime.infrastructure.jparepos.jpa.GenreJpaRepository;
+import com.myanime.infrastructure.entities.Genre;
+import com.myanime.infrastructure.jparepos.GenreJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

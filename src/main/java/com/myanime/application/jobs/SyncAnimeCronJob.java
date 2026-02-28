@@ -1,18 +1,21 @@
 package com.myanime.application.jobs;
 
-import com.myanime.domain.port.input.job.SyncAnimeUC;
-import lombok.RequiredArgsConstructor;
+import com.myanime.domain.port.input.job.SyncUC;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class SyncAnimeCronJob {
 
-    private final SyncAnimeUC syncAnimeUC;
+    private final SyncUC syncUC;
+
+    public SyncAnimeCronJob(@Qualifier("syncAnimeService") SyncUC syncUC) {
+        this.syncUC = syncUC;
+    }
 
     @Value(value = "${cron.sync-anime-disable}")
     private Boolean disable = Boolean.FALSE;
@@ -24,7 +27,7 @@ public class SyncAnimeCronJob {
             return;
         }
 
-        syncAnimeUC.run();
+        syncUC.run();
     }
 
 }

@@ -1,9 +1,9 @@
 package com.myanime.infrastructure.configurations;
 
-import com.myanime.infrastructure.entities.jpa.Role;
-import com.myanime.infrastructure.entities.jpa.User;
-import com.myanime.infrastructure.jparepos.jpa.RoleRepository;
-import com.myanime.infrastructure.jparepos.jpa.UserRepository;
+import com.myanime.infrastructure.entities.Role;
+import com.myanime.infrastructure.entities.User;
+import com.myanime.infrastructure.jparepos.RoleRepository;
+import com.myanime.infrastructure.jparepos.UserJpaRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -41,9 +41,9 @@ public class ApplicationInitConfig {
             value = "datasource.driverClassName",
             havingValue = "com.mysql.cj.jdbc.Driver"
     )
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+    ApplicationRunner applicationRunner(UserJpaRepository userJpaRepository, RoleRepository roleRepository) {
         return args -> {
-            if (userRepository.findByUsername("admin").isEmpty()) {
+            if (userJpaRepository.findByUsername("admin").isEmpty()) {
                 Role adminRole = Role.builder()
                         .name("ADMIN")
                         .description("Admin role")
@@ -66,7 +66,7 @@ public class ApplicationInitConfig {
                         .roles(adminRoleSet)
                         .build();
 
-                userRepository.save(admin);
+                userJpaRepository.save(admin);
                 log.warn("Admin user has been created with default password: *****, please change it");
             }
         };

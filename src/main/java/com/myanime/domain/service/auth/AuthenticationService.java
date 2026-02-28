@@ -1,13 +1,13 @@
 package com.myanime.domain.service.auth;
 
-import com.myanime.infrastructure.entities.jpa.User;
+import com.myanime.infrastructure.entities.User;
 import com.myanime.common.exceptions.AppException;
 import com.myanime.common.exceptions.ErrorCode;
 import com.myanime.application.rest.requests.authen.AuthenticationRequest;
 import com.myanime.application.rest.requests.authen.IntrospectRequest;
 import com.myanime.application.rest.responses.AuthenticationResponse;
 import com.myanime.application.rest.responses.IntrospectResponse;
-import com.myanime.infrastructure.jparepos.jpa.UserRepository;
+import com.myanime.infrastructure.jparepos.UserJpaRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -36,7 +36,7 @@ import java.util.StringJoiner;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService implements AuthenticationServiceInterface {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
-    UserRepository userRepository;
+    UserJpaRepository userJpaRepository;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -59,7 +59,7 @@ public class AuthenticationService implements AuthenticationServiceInterface {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var user = userRepository.findByUsername(request.getUsername())
+        var user = userJpaRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
@@ -81,7 +81,7 @@ public class AuthenticationService implements AuthenticationServiceInterface {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(user.getId())
                 .issuer("myanime.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(

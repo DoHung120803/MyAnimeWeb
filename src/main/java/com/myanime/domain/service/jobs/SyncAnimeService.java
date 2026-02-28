@@ -1,79 +1,51 @@
 package com.myanime.domain.service.jobs;
 
-import com.myanime.domain.port.input.job.SyncAnimeUC;
+import com.myanime.common.constants.GlobalConstant;
+import com.myanime.domain.models.AnimeModel;
+import com.myanime.domain.port.input.job.SyncUC;
 import com.myanime.domain.port.output.AnimeRepository;
-import com.myanime.infrastructure.elasticsearch.Bulk;
 import com.myanime.infrastructure.elasticsearch.ESDocument;
-import com.myanime.infrastructure.models.AnimeModel;
-import io.sentry.Sentry;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static com.myanime.common.constants.ElasticsearchConstant.ANIME_INDEX_NAME;
-
-@Service
-@RequiredArgsConstructor
+@Service("syncAnimeService")
 @Slf4j
-public class SyncAnimeService implements SyncAnimeUC {
+public class SyncAnimeService extends AbstractSyncService<AnimeModel> implements SyncUC {
 
-    private final AnimeRepository animeRepository;
-
-    private static final Integer LIMIT = 200;
-    private final ESDocument esDocument;
+    public SyncAnimeService(AnimeRepository animeRepository, ESDocument esDocument) {
+        super(animeRepository, esDocument);
+    }
 
     @Override
-    public void run() {
-        String minId = null;
+    protected String getIndexName() {
+        return GlobalConstant.ESIndex.ANIMES;
+    }
 
-        Bulk bulkRequest =  new Bulk();
+    @Override
+    protected String getId(AnimeModel model) {
+        return model.getId();
+    }
 
-        while (true) {
-            List<AnimeModel> listAnime = animeRepository.findByMinIdAndLimit(minId, LIMIT);
+    @Override
+    protected Map<String, Object> toIndexMap(AnimeModel anime) {
+        Map<String, Object> mapData = new HashMap<>();
 
-            if (listAnime.isEmpty()) {
-                break; // No more data to process
-            }
+        mapData.put("id", anime.getId());
+        mapData.put("name", anime.getName());
+        mapData.put("description", anime.getDescription());
+        mapData.put("rate", anime.getRate());
+        mapData.put("views", anime.getViews());
+        mapData.put("iframe", anime.getIframe());
+        mapData.put("thumbnailUrl", anime.getThumbnailUrl());
 
-            log.info("Start syncing {} animes with minId: {}", listAnime.size(), minId);
+        return mapData;
+    }
 
-            try {
-                for (AnimeModel anime : listAnime) {
-                    String id = anime.getId();
-
-                    Map<String, Object> mapData = new HashMap<>();
-
-                    mapData.put("id", id);
-                    mapData.put("name", anime.getName());
-                    mapData.put("description", anime.getDescription());
-                    mapData.put("rate", anime.getRate());
-                    mapData.put("views", anime.getViews());
-                    mapData.put("iframe", anime.getIframe());
-                    mapData.put("thumbnail_url", anime.getThumbnailUrl());
-                    mapData.put("created_at", anime.getCreatedAt());
-                    mapData.put("updated_at", anime.getUpdatedAt());
-
-                    bulkRequest.addBulkRequestUpdate(
-                            id,
-                            ANIME_INDEX_NAME,
-                            mapData
-                    );
-                }
-
-                minId = listAnime.getLast().getId();
-                esDocument.executeBulkRequest(bulkRequest.getBulkRequest());
-                bulkRequest.clear();
-
-            } catch (Exception e) {
-                log.error(">>> Error syncing animes with minId: {}. Error: {}", minId, e.getMessage(), e);
-                Sentry.captureException(e);
-            }
-        }
-
-        log.info("Syncing animes completed successfully.");
+    @Override
+    protected String getEntityName() {
+        return "animes";
     }
 }

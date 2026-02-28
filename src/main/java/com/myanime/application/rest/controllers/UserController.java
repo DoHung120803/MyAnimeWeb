@@ -5,12 +5,13 @@ import com.myanime.application.rest.requests.user.UserUpdateRequest;
 import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.application.rest.responses.UserResponse;
-import com.myanime.common.exceptions.BadRequestException;
+import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.input.UserUC;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 public class UserController {
     UserUC userUC;
-    KafkaTemplate<String, String> kafkaTemplate;
 
     @PostMapping("/register")
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
@@ -30,8 +30,8 @@ public class UserController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/get-all")
     public ApiResponse<PageResponse<UserResponse>> getUsers(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "20") int size
@@ -45,6 +45,13 @@ public class UserController {
     public ApiResponse<UserResponse> getUser(@PathVariable String id) {
         return ApiResponse.<UserResponse>builder()
                 .data(userUC.getUser(id))
+                .build();
+    }
+
+    @GetMapping("/username/{username}")
+    public ApiResponse<UserResponse> getUserByUsername(@PathVariable String username) {
+        return ApiResponse.<UserResponse>builder()
+                .data(userUC.getUserByUsername(username))
                 .build();
     }
 
@@ -66,5 +73,15 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable String id) {
         userUC.deleteUser(id);
+    }
+
+    @PostMapping("/search")
+    public ApiResponse<PageResponse<UserModel>> searchUsers(
+            @RequestParam String keyword,
+            Pageable pageable
+    ) {
+        return ApiResponse.<PageResponse<UserModel>>builder()
+                .data(userUC.searchUsers(keyword, pageable))
+                .build();
     }
 }

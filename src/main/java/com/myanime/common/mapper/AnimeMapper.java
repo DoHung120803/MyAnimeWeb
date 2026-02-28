@@ -1,6 +1,6 @@
 package com.myanime.common.mapper;
 
-import com.myanime.infrastructure.entities.jpa.Anime;
+import com.myanime.infrastructure.entities.Anime;
 import com.myanime.application.rest.requests.anime.AnimeCreationRequest;
 import com.myanime.application.rest.requests.anime.AnimeUpdateRequest;
 import com.myanime.application.rest.responses.AnimeResponse;
