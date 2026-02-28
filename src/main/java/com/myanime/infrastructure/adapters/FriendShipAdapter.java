@@ -67,4 +67,13 @@ public class FriendShipAdapter implements FriendShipRepository {
         return friendshipJpaRepository.findByLowUserIdAndHighUserId(lowUserId, highUserId)
                 .map(entity -> ModelMapperUtil.mapper(entity, FriendShipModel.class));
     }
+
+    @Override
+    public void deleteById(String id) {
+        if (!StringUtils.hasText(id)) {
+            return;
+        }
+
+        friendshipJpaRepository.deleteById(id);
+    }
 }

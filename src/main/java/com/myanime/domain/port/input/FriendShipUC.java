@@ -3,6 +3,7 @@ package com.myanime.domain.port.input;
 import com.myanime.application.rest.requests.friends.AddFriendRequest;
 import com.myanime.application.rest.requests.friends.RespondToFriendRequest;
 import com.myanime.common.exceptions.BadRequestException;
+import com.myanime.domain.dtos.friends.FriendshipStatusDTO;
 import com.myanime.domain.models.UserModel;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface FriendShipUC {
 
     List<UserModel> getFriends();
 
-    String getFriendshipStatus(String targetUserId);
+    FriendshipStatusDTO getFriendshipStatus(String targetUserId);
 }

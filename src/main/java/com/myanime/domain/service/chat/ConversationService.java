@@ -3,6 +3,7 @@ package com.myanime.domain.service.chat;
 import com.myanime.application.rest.requests.chat.CreateConservationRequest;
 import com.myanime.application.rest.requests.chat.GetDirectConversationRequest;
 import com.myanime.application.rest.requests.chat.GetMessageRequest;
+import com.myanime.application.rest.requests.chat.MarkAsReadRequest;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.common.utils.AuthUtil;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -45,8 +47,11 @@ public class ConversationService implements ConversationUC {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createConservation(CreateConservationRequest request) throws BadRequestException {
-        List<String> userIds = request.getUserIds().stream().distinct().toList();
+    public void createDirectConservation(CreateConservationRequest request) throws BadRequestException {
+        String currentUserId = AuthUtil.getCurrentUserId();
+        String lastMessageText = request.getLastMessageText();
+
+        List<String> userIds = List.of(currentUserId, request.getUserId());
 
         long existingUserCount = userRepository.countByIdIn(userIds);
         if (existingUserCount != userIds.size()) {
@@ -55,24 +60,17 @@ public class ConversationService implements ConversationUC {
 
         ConversationModel conversation = new ConversationModel();
 
-        if (ConversationType.DIRECT.getType().equals(request.getType())) {
-            if (userIds.size() != 2) {
-                throw new BadRequestException("Cuộc trò chuyện trực tiếp chỉ có thể có 2 thành viên");
-            }
+        String directConversationKey = generateHash(currentUserId, request.getUserId());
 
-            String directConversationKey = generateHash(userIds.getFirst(), userIds.get(1));
-
-            if (conversationRepository.existByDirectConversationKey(directConversationKey)) {
-                throw new BadRequestException("Cuộc trò chuyện trực tiếp giữa hai người dùng đã tồn tại");
-            } else conversation.setDirectConversationKey(directConversationKey);
-        }
+        if (conversationRepository.existByDirectConversationKey(directConversationKey)) {
+            throw new BadRequestException("Cuộc trò chuyện trực tiếp giữa hai người dùng đã tồn tại");
+        } else conversation.setDirectConversationKey(directConversationKey);
 
         conversation.setName(request.getName());
 
-        ConversationType conversationType = ConversationType.fromType(request.getType());
-        conversation.setType(conversationType.getType());
+        conversation.setType(ConversationType.DIRECT.getType());
         conversation.setCreatedAt(LocalDateTime.now());
-        conversation.setLastMessageText(request.getLastMessageText());
+        conversation.setLastMessageText(lastMessageText);
         conversation.setLastMessageTime(LocalDateTime.now());
 
         Long conversationId = conversationRepository.save(conversation).getId();
@@ -86,6 +84,18 @@ public class ConversationService implements ConversationUC {
         }).toList();
 
         conversationMemberRepository.saveAll(members);
+
+        // Lưu tin nhắn đầu tiên vào bảng message
+        if (!StringUtils.hasText(lastMessageText)) return;
+
+        MessageModel firstMessage = new MessageModel();
+        firstMessage.setConversationId(conversationId);
+        firstMessage.setSenderId(currentUserId);
+        firstMessage.setContent(lastMessageText);
+        firstMessage.setMessageType((short) 1); // 1 = TEXT (khớp với MessageType.TEXT)
+        firstMessage.setCreatedAt(LocalDateTime.now());
+        messageRepository.save(firstMessage);
+
     }
 
     @Override
@@ -154,6 +164,11 @@ public class ConversationService implements ConversationUC {
                     .build();
         }
 
+        // Lấy tất cả conversation IDs
+        List<Long> allConversationIds = content.stream()
+                .map(ConversationModel::getId)
+                .toList();
+
         // Lấy tất cả conversation IDs của các cuộc trò chuyện trực tiếp, group thì tạm thời chưa xử lý avatar
         List<Long> directConversationIds = content.stream()
                 .filter(c -> ConversationType.DIRECT.getType().equals(c.getType()))
@@ -161,11 +176,20 @@ public class ConversationService implements ConversationUC {
                 .toList();
 
         // Get all member IDs for ALL conversations in ONE database call
-        List<ConversationMemberModel> conversationMembers = conversationMemberRepository.findByConversationIds(directConversationIds);
+        List<ConversationMemberModel> conversationMembers = conversationMemberRepository.findByConversationIds(allConversationIds);
 
-        // tạo Map đểu lưu other user IDs cần lấy avatar trong tất cả các cuộc trò chuyện
+        // Tạo Map unreadCount theo conversationId cho current user
+        Map<Long, Integer> unreadCountMap = conversationMembers.stream()
+                .filter(member -> member.getUserId().equals(currentUserId))
+                .collect(Collectors.toMap(
+                        ConversationMemberModel::getConversationId,
+                        member -> member.getUnreadCount() != null ? member.getUnreadCount() : 0
+                ));
+
+        // tạo Map để lưu other user IDs cần lấy avatar trong tất cả các cuộc trò chuyện
         Map<Long, String> otherUserIdsMap = conversationMembers.stream()
-                .filter(member -> !member.getUserId().equals(currentUserId))
+                .filter(member -> !member.getUserId().equals(currentUserId)
+                        && directConversationIds.contains(member.getConversationId()))
                 .collect(Collectors.toMap(
                         ConversationMemberModel::getConversationId,
                         ConversationMemberModel::getUserId
@@ -180,9 +204,12 @@ public class ConversationService implements ConversationUC {
                 ));
 
 
-        // Populate chat avatar for each conversation
+        // Populate chat avatar và unreadCount for each conversation
         List<ConversationModel> conversationModels = content.stream()
                 .peek(conversation -> {
+                    // Set unreadCount cho từng conversation
+                    conversation.setUnreadCount(unreadCountMap.getOrDefault(conversation.getId(), 0));
+
                     if (ConversationType.DIRECT.getType().equals(conversation.getType())) {
                         String otherUserId = otherUserIdsMap.get(conversation.getId());
                         UserModel userModel = userModelMap.get(otherUserId);
@@ -201,5 +228,22 @@ public class ConversationService implements ConversationUC {
                 .totalPages(conversations.getTotalPages())
                 .build();
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void markAsRead(MarkAsReadRequest request) {
+        String currentUserId = jwtUtil.getCurrentUserId();
+        conversationMemberRepository.markAsRead(
+                request.getConversationId(),
+                currentUserId,
+                request.getLastReadMessageId()
+        );
+    }
+
+    @Override
+    public int getTotalUnreadCount() {
+        String currentUserId = jwtUtil.getCurrentUserId();
+        return conversationMemberRepository.getTotalUnreadCount(currentUserId);
     }
 }

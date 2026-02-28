@@ -11,6 +11,7 @@ public interface UserRepository extends SyncableRepository<UserModel> {
     long countByIdIn(List<String> ids);
     boolean existsById(String id);
     Optional<UserModel> findById(String id);
+    List<UserModel> findAllByIds(List<String> ids);
     List<UserModel> getConversationUserInfo(List<String> userIds);
     List<UserModel> findByMinIdAndLimit(String minId, Integer limit);
     Page<UserModel> search(String keyword, Pageable pageable);

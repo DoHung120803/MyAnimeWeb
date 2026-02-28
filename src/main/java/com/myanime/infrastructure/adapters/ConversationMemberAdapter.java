@@ -43,4 +43,25 @@ public class ConversationMemberAdapter implements ConversationMemberRepository {
         );
     }
 
+    @Override
+    public void incrementUnreadCountForOtherMembers(Long conversationId, String senderUserId) {
+        conversationMemberJpaRepository.incrementUnreadCountForOtherMembers(conversationId, senderUserId);
+    }
+
+    @Override
+    public void markAsRead(Long conversationId, String userId, Long lastReadMessageId) {
+        conversationMemberJpaRepository.markAsRead(conversationId, userId, lastReadMessageId);
+    }
+
+    @Override
+    public ConversationMemberModel findByConversationIdAndUserId(Long conversationId, String userId) {
+        return conversationMemberJpaRepository.findByConversationIdAndUserId(conversationId, userId)
+                .map(entity -> ModelMapperUtil.mapper(entity, ConversationMemberModel.class))
+                .orElse(null);
+    }
+
+    @Override
+    public int getTotalUnreadCount(String userId) {
+        return conversationMemberJpaRepository.getTotalUnreadCount(userId);
+    }
 }

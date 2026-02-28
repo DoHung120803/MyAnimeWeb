@@ -19,6 +19,10 @@ public class ConversationMember {
 
     private String userId;
 
+    private Long lastReadMessageId;
+
+    private Integer unreadCount;
+
     private LocalDateTime joinedAt;
 }
 

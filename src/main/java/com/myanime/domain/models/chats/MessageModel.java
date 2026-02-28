@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,5 +19,8 @@ public class MessageModel {
 
     private String content;
 
+    private List<MessageAttachmentModel> attachments;
+
     private LocalDateTime createdAt;
+
 }

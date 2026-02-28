@@ -4,6 +4,7 @@ import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.domain.dtos.notifies.NotificationDTO;
 import com.myanime.domain.enums.NotifyType;
 import com.myanime.domain.models.NotificationModel;
+import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.output.NotificationRepository;
 import com.myanime.domain.port.output.UserRepository;
 import com.myanime.domain.service.notifies.PostNotifyObserver;
@@ -31,6 +32,7 @@ public class InAppNotifyObserver implements PostNotifyObserver {
         try {
             String senderId = resolveSenderId(event);
             String senderName = resolveSenderName(senderId);
+            String senderUsername = resolveSenderUsername(senderId);
 
             // Build nội dung thông báo kèm tên người gửi
             String content = buildContent(senderName, event.getMessage());
@@ -46,7 +48,10 @@ public class InAppNotifyObserver implements PostNotifyObserver {
 
             NotificationModel saved = notificationRepository.save(model);
 
-            // 2. Push realtime qua WebSocket tới user cụ thể
+            // 2. Set senderUsername (không persist vào DB, chỉ dùng cho realtime push)
+            saved.setSenderUsername(senderUsername);
+
+            // 3. Push realtime qua WebSocket tới user cụ thể
             messagingTemplate.convertAndSend(
                     "/notification/user/" + event.getReceiver(),
                     ApiResponse.<NotificationModel>builder()
@@ -85,6 +90,17 @@ public class InAppNotifyObserver implements PostNotifyObserver {
                     String fullName = (first + " " + last).trim();
                     return fullName.isEmpty() ? user.getUsername() : fullName;
                 })
+                .orElse(null);
+    }
+
+    /**
+     * Lấy username của sender để frontend navigate đến profile
+     */
+    private String resolveSenderUsername(String senderId) {
+        if (senderId == null || senderId.isBlank()) return null;
+
+        return userRepository.findById(senderId)
+                .map(UserModel::getUsername)
                 .orElse(null);
     }
 

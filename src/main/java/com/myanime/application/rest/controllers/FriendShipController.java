@@ -4,6 +4,7 @@ import com.myanime.application.rest.requests.friends.AddFriendRequest;
 import com.myanime.application.rest.requests.friends.RespondToFriendRequest;
 import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.common.exceptions.BadRequestException;
+import com.myanime.domain.dtos.friends.FriendshipStatusDTO;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.input.FriendShipUC;
 import jakarta.validation.Valid;
@@ -45,9 +46,9 @@ public class FriendShipController {
     }
 
     @GetMapping("/status/{targetUserId}")
-    public ApiResponse<String> getFriendshipStatus(@PathVariable String targetUserId) {
-        String status = friendShipUC.getFriendshipStatus(targetUserId);
-        return ApiResponse.<String>builder()
+    public ApiResponse<FriendshipStatusDTO> getFriendshipStatus(@PathVariable String targetUserId) {
+        FriendshipStatusDTO status = friendShipUC.getFriendshipStatus(targetUserId);
+        return ApiResponse.<FriendshipStatusDTO>builder()
                 .data(status)
                 .message("Lấy trạng thái kết bạn thành công")
                 .build();

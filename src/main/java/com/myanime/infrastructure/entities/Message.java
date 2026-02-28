@@ -19,7 +19,7 @@ public class Message {
 
     private String senderId;
 
-    private Byte messageType;
+    private Short messageType;
 
     private String content;
 

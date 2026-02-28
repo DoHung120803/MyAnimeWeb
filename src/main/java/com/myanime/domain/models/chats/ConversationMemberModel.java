@@ -14,5 +14,9 @@ public class ConversationMemberModel {
 
     private String userId;
 
+    private Long lastReadMessageId;
+
+    private Integer unreadCount;
+
     private LocalDateTime joinedAt;
 }

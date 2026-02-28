@@ -20,6 +20,9 @@ public class Notification {
     @Column(name = "sender_id")
     private String senderId;
 
+    @Transient
+    private String senderUsername;
+
     @Column(name = "type")
     private String type;
 

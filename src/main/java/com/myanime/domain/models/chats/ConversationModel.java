@@ -23,4 +23,6 @@ public class ConversationModel {
     private String directConversationKey;
 
     private LocalDateTime lastMessageTime;
+
+    private Integer unreadCount;
 }

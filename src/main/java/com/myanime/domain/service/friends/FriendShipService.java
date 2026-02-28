@@ -5,7 +5,7 @@ import com.myanime.application.rest.requests.friends.RespondToFriendRequest;
 import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.common.utils.AuthUtil;
 import com.myanime.common.utils.ModelMapperUtil;
-import com.myanime.domain.dtos.notifies.NotificationDTO;
+import com.myanime.domain.dtos.friends.FriendshipStatusDTO;
 import com.myanime.domain.enums.FriendShipStatus;
 import com.myanime.domain.enums.NotificationEventType;
 import com.myanime.domain.models.FriendShipModel;
@@ -14,12 +14,12 @@ import com.myanime.domain.port.input.FriendShipUC;
 import com.myanime.domain.port.output.FriendShipRepository;
 import com.myanime.domain.port.output.UserRepository;
 import com.myanime.domain.service.notifies.PostNotificationService;
+import com.myanime.domain.service.notifies.builder.NotificationEventFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +28,7 @@ public class FriendShipService implements FriendShipUC {
     private final UserRepository userRepository;
     private final FriendShipRepository friendShipRepository;
     private final PostNotificationService postNotificationService;
+    private final NotificationEventFactory notificationEventFactory;
 
     @Override
     public void addFriend(AddFriendRequest request) throws BadRequestException {
@@ -44,6 +45,7 @@ public class FriendShipService implements FriendShipUC {
         friendShipModel.setLowUserId(lowerId);
         friendShipModel.setHighUserId(higherId);
         friendShipModel.setStatus(FriendShipStatus.SENT.getCode());
+        friendShipModel.setRequesterUserId(userId);
 
         if (friendShipRepository.existsByUserIds(lowerId, higherId))
             throw new BadRequestException("Bạn đã gửi lời mời kết bạn hoặc đã là bạn bè với người này");
@@ -51,16 +53,11 @@ public class FriendShipService implements FriendShipUC {
         FriendShipModel saved = friendShipRepository.save(friendShipModel);
 
         // Gửi thông báo realtime tới người nhận lời mời kết bạn
-        NotificationDTO notificationDTO = new NotificationDTO();
-        notificationDTO.setReceiver(friendUserId);
-        notificationDTO.setTitle("Lời mời kết bạn");
-        notificationDTO.setMessage("đã gửi cho bạn lời mời kết bạn");
-        notificationDTO.setMetaData(Map.of(
-                "type", NotificationEventType.FRIEND_REQUEST.getCode(),
-                "referenceId", saved.getId(),
-                "senderId", userId
+        postNotificationService.post(notificationEventFactory.build(
+                NotificationEventType.FRIEND_REQUEST,
+                friendUserId,
+                Map.of("referenceId", saved.getId(), "senderId", userId)
         ));
-        postNotificationService.post(notificationDTO);
     }
 
     @Override
@@ -76,9 +73,22 @@ public class FriendShipService implements FriendShipUC {
             throw new BadRequestException("Yêu cầu kết bạn đã được phản hồi trước đó");
         }
 
-        friendShipModel.setStatus(Boolean.TRUE.equals(request.getIsAccept()) ? FriendShipStatus.ACCEPTED.getCode() : FriendShipStatus.REJECTED.getCode());
+        if (Boolean.TRUE.equals(request.getIsAccept()))
+            friendShipModel.setStatus(FriendShipStatus.ACCEPTED.getCode());
+        else {
+            friendShipRepository.deleteById(requestId);
+            return;
+        }
 
         friendShipRepository.save(friendShipModel);
+
+        // Gửi thông báo realtime tới người đã gửi lời mời (requester)
+        String currentUserId = AuthUtil.getCurrentUserId();
+        postNotificationService.post(notificationEventFactory.build(
+                NotificationEventType.ACCEPT_FRIEND,
+                friendShipModel.getRequesterUserId(),
+                Map.of("referenceId", requestId, "senderId", currentUserId)
+        ));
     }
 
     @Override
@@ -94,18 +104,32 @@ public class FriendShipService implements FriendShipUC {
     }
 
     @Override
-    public String getFriendshipStatus(String targetUserId) {
+    public FriendshipStatusDTO getFriendshipStatus(String targetUserId) {
         String currentUserId = AuthUtil.getCurrentUserId();
 
         if (currentUserId.equals(targetUserId)) {
-            return "SELF";
+            return new FriendshipStatusDTO(FriendShipStatus.SELF.getCode(), null);
         }
 
         String lowerId = currentUserId.compareTo(targetUserId) < 0 ? currentUserId : targetUserId;
         String higherId = currentUserId.compareTo(targetUserId) < 0 ? targetUserId : currentUserId;
 
-        return friendShipRepository.findByUserIds(lowerId, higherId)
-                .map(FriendShipModel::getStatus)
-                .orElse("NONE");
+        FriendShipModel friendShipModel = friendShipRepository.findByUserIds(lowerId, higherId).orElse(null);
+
+        if (friendShipModel == null) {
+            return new FriendshipStatusDTO(FriendShipStatus.NONE.getCode(), null);
+        }
+
+        String status = friendShipModel.getStatus();
+        String requesterUserId = friendShipModel.getRequesterUserId();
+
+        if (status.equals(FriendShipStatus.SENT.getCode())) {
+            String resolvedStatus = requesterUserId.equals(currentUserId)
+                    ? FriendShipStatus.SENT.getCode()
+                    : FriendShipStatus.WAITING.getCode();
+            return new FriendshipStatusDTO(resolvedStatus, friendShipModel.getId());
+        }
+
+        return new FriendshipStatusDTO(status, friendShipModel.getId());
     }
 }

@@ -3,6 +3,7 @@ package com.myanime.domain.service.banner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.domain.port.input.BannerUC;
 import com.myanime.infrastructure.cache.CacheComponent;
@@ -34,7 +35,7 @@ public class BannerService implements BannerUC {
 
     @Override
     @Transactional
-    public BannerResponse createBanner(BannerCreationRequest request) throws IOException {
+    public BannerResponse createBanner(BannerCreationRequest request) throws IOException, BadRequestException {
         String id = UUID.randomUUID().toString();
         String imageUrl = cloudinaryService.uploadFile(id, request.getImage());
 

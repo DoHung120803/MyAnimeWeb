@@ -99,3 +99,12 @@ management:
     metrics:
       export:
         enabled: true
+
+media:
+  image:
+    resize:
+      flag: true
+      max-dimension: 1280
+    compress:
+      max-size: 512000
+      quality: 0.75f

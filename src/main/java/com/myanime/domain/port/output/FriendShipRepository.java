@@ -12,4 +12,5 @@ public interface FriendShipRepository {
     Optional<FriendShipModel> findById(String id);
     List<String> getFriendIds(String userId);
     Optional<FriendShipModel> findByUserIds(String lowUserId, String highUserId);
+    void deleteById(String id);
 }

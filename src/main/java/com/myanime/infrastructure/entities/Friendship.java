@@ -19,6 +19,9 @@ public class Friendship {
     @Column(name = "high_user_id")
     private String highUserId;
 
+    @Column(name = "requester_user_id")
+    private String requesterUserId;
+
     @Column(name = "status")
     private String status;
 

@@ -62,6 +62,13 @@ public class UserAdapter implements UserRepository {
     }
 
     @Override
+    public List<UserModel> findAllByIds(List<String> ids) {
+        if (CollectionUtils.isEmpty(ids)) return List.of();
+
+        return ModelMapperUtil.mapList(userJpaRepository.findAllById(ids), UserModel.class);
+    }
+
+    @Override
     public List<UserModel> getConversationUserInfo(List<String> userIds) {
         if (CollectionUtils.isEmpty(userIds)) {
             return List.of();

@@ -11,6 +11,7 @@ public class NotificationModel {
     private Long id;
     private String userId;
     private String senderId;
+    private String senderUsername;
     private String type;
     private String referenceId;
     private String content;

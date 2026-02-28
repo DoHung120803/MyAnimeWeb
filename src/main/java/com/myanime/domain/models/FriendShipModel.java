@@ -11,6 +11,7 @@ public class FriendShipModel {
     private String id;
     private String lowUserId;
     private String highUserId;
+    private String requesterUserId;
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
