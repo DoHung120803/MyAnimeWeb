@@ -15,4 +15,5 @@ public interface UserRepository extends SyncableRepository<UserModel> {
     List<UserModel> getConversationUserInfo(List<String> userIds);
     List<UserModel> findByMinIdAndLimit(String minId, Integer limit);
     Page<UserModel> search(String keyword, Pageable pageable);
+    Optional<UserModel> findByIdWithRoles(String id);
 }

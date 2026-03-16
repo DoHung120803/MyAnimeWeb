@@ -3,11 +3,11 @@ package com.myanime.domain.service.friends;
 import com.myanime.application.rest.requests.friends.AddFriendRequest;
 import com.myanime.application.rest.requests.friends.RespondToFriendRequest;
 import com.myanime.common.exceptions.BadRequestException;
-import com.myanime.common.utils.AuthUtil;
 import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.domain.dtos.friends.FriendshipStatusDTO;
 import com.myanime.domain.enums.FriendShipStatus;
 import com.myanime.domain.enums.NotificationEventType;
+import com.myanime.domain.enums.NotifyType;
 import com.myanime.domain.models.FriendShipModel;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.input.FriendShipUC;
@@ -15,6 +15,7 @@ import com.myanime.domain.port.output.FriendShipRepository;
 import com.myanime.domain.port.output.UserRepository;
 import com.myanime.domain.service.notifies.PostNotificationService;
 import com.myanime.domain.service.notifies.builder.NotificationEventFactory;
+import com.myanime.infrastructure.configurations.securities.utils.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,7 @@ public class FriendShipService implements FriendShipUC {
                 NotificationEventType.FRIEND_REQUEST,
                 friendUserId,
                 Map.of("referenceId", saved.getId(), "senderId", userId)
-        ));
+        ), List.of(NotifyType.IN_APP.getValue()));
     }
 
     @Override
@@ -88,7 +89,7 @@ public class FriendShipService implements FriendShipUC {
                 NotificationEventType.ACCEPT_FRIEND,
                 friendShipModel.getRequesterUserId(),
                 Map.of("referenceId", requestId, "senderId", currentUserId)
-        ));
+        ), List.of(NotifyType.IN_APP.getValue()));
     }
 
     @Override

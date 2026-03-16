@@ -6,7 +6,7 @@ import com.myanime.application.rest.requests.chat.GetMessageRequest;
 import com.myanime.application.rest.requests.chat.MarkAsReadRequest;
 import com.myanime.application.rest.responses.PageResponse;
 import com.myanime.common.exceptions.BadRequestException;
-import com.myanime.common.utils.AuthUtil;
+import com.myanime.infrastructure.configurations.securities.utils.AuthUtil;
 import com.myanime.domain.enums.ConversationType;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.models.chats.ConversationMemberModel;
@@ -42,8 +42,6 @@ public class ConversationService implements ConversationUC {
     private final UserRepository userRepository;
     private final ConversationMemberRepository conversationMemberRepository;
     private final MessageRepository messageRepository;
-
-    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -149,7 +147,7 @@ public class ConversationService implements ConversationUC {
 
     @Override
     public PageResponse<ConversationModel> getUserConversations(Pageable pageable) {
-        String currentUserId = jwtUtil.getCurrentUserId();
+        String currentUserId = AuthUtil.getCurrentUserId();
         Page<ConversationModel> conversations = conversationRepository.findConversationsByUserId(currentUserId, pageable);
 
         List<ConversationModel> content = conversations.getContent();
@@ -233,7 +231,7 @@ public class ConversationService implements ConversationUC {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void markAsRead(MarkAsReadRequest request) {
-        String currentUserId = jwtUtil.getCurrentUserId();
+        String currentUserId = AuthUtil.getCurrentUserId();
         conversationMemberRepository.markAsRead(
                 request.getConversationId(),
                 currentUserId,
@@ -243,7 +241,7 @@ public class ConversationService implements ConversationUC {
 
     @Override
     public int getTotalUnreadCount() {
-        String currentUserId = jwtUtil.getCurrentUserId();
+        String currentUserId = AuthUtil.getCurrentUserId();
         return conversationMemberRepository.getTotalUnreadCount(currentUserId);
     }
 }

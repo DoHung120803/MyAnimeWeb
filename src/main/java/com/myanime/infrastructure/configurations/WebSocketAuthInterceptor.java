@@ -1,5 +1,8 @@
 package com.myanime.infrastructure.configurations;
 
+import com.myanime.infrastructure.configurations.securities.utils.CustomUserDetails;
+import com.myanime.infrastructure.configurations.securities.utils.CustomUserDetailService;
+import com.myanime.infrastructure.configurations.securities.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -7,13 +10,9 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,7 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
-    private final JwtDecoder jwtDecoder;
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailService userDetailService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -41,13 +41,20 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
                 if (bearerToken.startsWith("Bearer ")) {
                     String token = bearerToken.substring(7);
 
-                    try {
-                        Jwt jwt = jwtDecoder.decode(token);
-                        Authentication authentication = new JwtAuthenticationToken(jwt, Collections.emptyList());
-                        accessor.setUser(authentication);
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException("Invalid JWT token in WebSocket connection", e);
+                    if (!jwtUtil.validateToken(token)) {
+                        throw new IllegalArgumentException("Invalid JWT token in WebSocket connection");
                     }
+
+                    String userId = jwtUtil.extractUserId(token);
+                    CustomUserDetails userDetail = userDetailService.loadUserByUsername(userId);
+
+                    if (userDetail == null) {
+                        throw new IllegalArgumentException("User not found for WebSocket connection");
+                    }
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
+                    accessor.setUser(authentication);
                 }
             }
         }

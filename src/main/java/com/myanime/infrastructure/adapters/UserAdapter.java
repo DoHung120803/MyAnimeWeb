@@ -103,6 +103,14 @@ public class UserAdapter implements UserRepository {
         return result;
     }
 
+    @Override
+    public Optional<UserModel> findByIdWithRoles(String id) {
+        if (!StringUtils.hasText(id)) return Optional.empty();
+
+        return userJpaRepository.findByIdWithRoles(id)
+                .map(user -> ModelMapperUtil.mapper(user, UserModel.class));
+    }
+
     private Page<UserModel> searchByES(String keyword, Pageable pageable) throws IOException {
 
         if (keyword == null || keyword.trim().isEmpty()) {

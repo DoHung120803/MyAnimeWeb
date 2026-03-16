@@ -4,11 +4,8 @@ import com.myanime.application.rest.requests.authen.AuthenticationRequest;
 import com.myanime.application.rest.requests.authen.IntrospectRequest;
 import com.myanime.application.rest.responses.AuthenticationResponse;
 import com.myanime.application.rest.responses.IntrospectResponse;
-import com.nimbusds.jose.JOSEException;
-
-import java.text.ParseException;
 
 public interface AuthenticationServiceInterface {
-    IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException;
+    IntrospectResponse introspect(IntrospectRequest request);
     AuthenticationResponse authenticate(AuthenticationRequest request);
 }

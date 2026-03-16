@@ -31,4 +31,12 @@ public interface UserJpaRepository extends JpaRepository<User, String> {
             """)
     Page<ConversationUserInfoProjection> searchUser(@Param("keyword") String keyword, Pageable pageable);
 
+        @Query("""
+                SELECT u
+                       FROM User u
+                       LEFT JOIN FETCH u.roles r
+                       LEFT JOIN FETCH r.permissions
+                       WHERE u.id = :id
+                """)
+        Optional<User> findByIdWithRoles(@Param("id") String id);
 }

@@ -1,99 +1,78 @@
 package com.myanime.infrastructure.configurations.securities;
 
-import com.myanime.infrastructure.configurations.JwtAuthenticationEntryPoint;
+import com.myanime.infrastructure.configurations.securities.filters.JwtAuthenticationFilter;
+import com.myanime.infrastructure.configurations.securities.utils.CustomAccessDeniedHandler;
+import com.myanime.infrastructure.configurations.securities.utils.CustomAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
     private static final String[] PUBLIC_ENDPOINTS = {
-            "api/v1/users/register",
-            "api/v1/auth/login",
-            "api/v1/auth/introspect",
-            "api/v1/animes/top-animes",
-            "api/v1/animes",
-            "api/v1/animes/search",
-            "api/v1/upload",
+            "/api/v1/users/register",
+            "/api/v1/auth/login",
+            "/api/v1/auth/introspect",
+            "/api/v1/animes/top-animes",
+            "/api/v1/animes",
+            "/api/v1/animes/search",
+            "/api/v1/upload",
             "/actuator/health",
             "/actuator/prometheus",
             "/api/v1/genres",
-            "/ws/**", // WebSocket endpoint (xác thực qua STOMP header)
+            "/ws/**",
             "/api/v1/users/get-all",
-            "/api/v1/users/search"
+            "/api/v1/users/search",
+            "/api/v1/banners"
     };
-
-    @Value("${jwt.signerKey}")
-    private String signerKey;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/banners").permitAll()
-                        .anyRequest().authenticated());
-
-        httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer ->
-                        jwtConfigurer.decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-        );
-
-        httpSecurity.cors(cors -> cors.configurationSource(request -> corsConfigurationSource()))
-                .httpBasic(AbstractHttpConfigurer::disable)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(request -> corsConfigurationSource()))
                 .formLogin(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable);
-        return httpSecurity.build();
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                );
+
+        return http.build();
     }
 
-    @Bean
-    JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
-    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
-
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-
-        return jwtAuthenticationConverter;
-    }
-
 
     CorsConfiguration corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -112,7 +91,7 @@ public class SecurityConfig {
     @Bean
     public FilterRegistrationBean hiddenHttpMethodFilter() {
         FilterRegistrationBean filterRegBean = new FilterRegistrationBean(new HiddenHttpMethodFilter());
-        filterRegBean.setUrlPatterns(Arrays.asList("/*"));
+        filterRegBean.setUrlPatterns(List.of("/*"));
         return filterRegBean;
     }
 }
