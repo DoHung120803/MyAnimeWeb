@@ -2,6 +2,7 @@ package com.myanime.domain.service.chat;
 
 import com.myanime.application.rest.requests.chat.SendMessageRequest;
 import com.myanime.common.exceptions.BadRequestException;
+import com.myanime.infrastructure.configurations.securities.utils.AuthUtil;
 import com.myanime.domain.enums.MessageType;
 import com.myanime.domain.models.chats.ConversationModel;
 import com.myanime.domain.models.chats.MessageAttachmentModel;
@@ -11,10 +12,7 @@ import com.myanime.domain.port.output.ConversationMemberRepository;
 import com.myanime.domain.port.output.ConversationRepository;
 import com.myanime.domain.port.output.MessageAttachmentRepository;
 import com.myanime.domain.port.output.MessageRepository;
-import com.myanime.infrastructure.configurations.securities.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -32,7 +30,6 @@ public class ChatService implements ChatUC {
     private final ConversationMemberRepository conversationMemberRepository;
     private final MessageRepository messageRepository;
     private final MessageAttachmentRepository messageAttachmentRepository;
-    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -55,7 +52,7 @@ public class ChatService implements ChatUC {
         message.setContent(request.getContent());
         message.setCreatedAt(LocalDateTime.now());
 
-        String senderId = extractUserId(principal);
+        String senderId = AuthUtil.getCurrentUserId();
         message.setSenderId(senderId);
 
         // Cập nhật last message
@@ -114,17 +111,5 @@ public class ChatService implements ChatUC {
                     return attachment;
                 })
                 .toList();
-    }
-
-    /**
-     * Lấy userId từ Principal (cho WebSocket STOMP) hoặc fallback về SecurityContext (cho HTTP)
-     */
-    private String extractUserId(Principal principal) {
-        if (principal instanceof JwtAuthenticationToken jwtAuth) {
-            Jwt jwt = jwtAuth.getToken();
-            return jwt.getSubject();
-        }
-        // Fallback cho HTTP request
-        return jwtUtil.getCurrentUserId();
     }
 }

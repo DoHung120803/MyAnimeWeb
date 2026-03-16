@@ -37,7 +37,7 @@ public class AnimeController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/chunk")
     public ApiResponse<Void> createAnime(@RequestBody List<AnimeCreationRequest> request) {
         if (request == null || request.isEmpty()) {

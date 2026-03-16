@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.myanime.common.utils.JsonUtil;
 import com.myanime.domain.dtos.UserDTO;
 import com.myanime.domain.dtos.notifies.NotificationDTO;
+import com.myanime.domain.enums.NotifyType;
 import com.myanime.domain.inputs.consumers.ConsumeInput;
 import com.myanime.domain.port.input.consumers.ConsumerUC;
 import com.myanime.domain.service.notifies.PostNotificationService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -30,7 +32,7 @@ public class UserRegistrationService implements ConsumerUC {
         }
 
         NotificationDTO event = buildNotificationEvent(userInfo);
-        postNotificationService.post(event);
+        postNotificationService.post(event, List.of(NotifyType.EMAIL.getValue(), NotifyType.TELEGRAM.getValue()));
     }
 
     private NotificationDTO buildNotificationEvent(UserDTO userInfo) {

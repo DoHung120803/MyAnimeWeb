@@ -16,9 +16,8 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
-# tối ưu cho free tier (RAM thấp)
-ENV JAVA_OPTS="-Xms128m -Xmx256m -XX:+UseSerialGC"
 
 EXPOSE 8080
 
+ENV JAVA_OPTS=""
 CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

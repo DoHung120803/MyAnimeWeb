@@ -1,6 +1,6 @@
 package com.myanime.domain.service.notifies;
 
-import com.myanime.common.utils.AuthUtil;
+import com.myanime.infrastructure.configurations.securities.utils.AuthUtil;
 import com.myanime.domain.models.NotificationModel;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.input.NotificationUC;
