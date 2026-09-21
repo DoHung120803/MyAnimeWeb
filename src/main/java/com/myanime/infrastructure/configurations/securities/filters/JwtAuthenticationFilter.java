@@ -35,8 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Res
                 return;
             }
 
-            String userId = jwtUtil.extractUserId(token);
-            CustomUserDetails userDetail = userDetailService.loadUserByUsername(userId);
+            String username = jwtUtil.extractUsername(token);
+            CustomUserDetails userDetail = userDetailService.loadUserByUsername(username);
 
             if (userDetail == null) {
                 responseUnauthorized(response);

@@ -4,10 +4,11 @@ import com.myanime.infrastructure.configurations.securities.filters.JwtAuthentic
 import com.myanime.infrastructure.configurations.securities.utils.CustomAccessDeniedHandler;
 import com.myanime.infrastructure.configurations.securities.utils.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,6 +34,7 @@ public class SecurityConfig {
             "/api/v1/users/register",
             "/api/v1/auth/login",
             "/api/v1/auth/introspect",
+            "/api/v1/auth/refresh-token",
             "/api/v1/animes/top-animes",
             "/api/v1/animes",
             "/api/v1/animes/search",
@@ -93,5 +95,10 @@ public class SecurityConfig {
         FilterRegistrationBean filterRegBean = new FilterRegistrationBean(new HiddenHttpMethodFilter());
         filterRegBean.setUrlPatterns(List.of("/*"));
         return filterRegBean;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 }

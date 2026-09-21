@@ -1,5 +1,6 @@
 package com.myanime.domain.port.output;
 
+import com.myanime.domain.models.UserDetailModel;
 import com.myanime.domain.models.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,5 @@ public interface UserRepository extends SyncableRepository<UserModel> {
     List<UserModel> findByMinIdAndLimit(String minId, Integer limit);
     Page<UserModel> search(String keyword, Pageable pageable);
     Optional<UserModel> findByIdWithRoles(String id);
+    Optional<UserDetailModel> findByUsernameWithRoles(String username);
 }

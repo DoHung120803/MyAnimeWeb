@@ -27,10 +27,9 @@ public class GlobalExceptionHandler {
 
         log.info("Exception: ", exception);
 
-        int code = (ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
         String message = (ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
 
-        setApiResponse(code, message);
+        setApiResponse(message);
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
@@ -38,7 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse> handleAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
-        setApiResponse(errorCode.getCode(), errorCode.getMessage());
+        setApiResponse(errorCode.getMessage());
 
         return ResponseEntity
                 .status(errorCode.getStatusCode())
@@ -51,7 +50,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .build()
         );
@@ -85,7 +83,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .build()
         );
@@ -97,7 +94,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .build()
         );
@@ -109,7 +105,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .build()
         );
@@ -121,7 +116,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .build()
         );
@@ -133,7 +127,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(
                 ApiResponse.builder()
-                        .code(errorCode.getCode())
                         .message(errorCode.getMessage())
                         .build()
         );
@@ -148,8 +141,7 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    private void setApiResponse(int code, String message) {
-        apiResponse.setCode(code);
+    private void setApiResponse(String message) {
         apiResponse.setMessage(message);
     }
 }

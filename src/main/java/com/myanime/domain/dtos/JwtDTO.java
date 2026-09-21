@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class JwtDTO {
     private String jwt;
+    private String refreshToken;
     private LocalDateTime expireAt;
     private Long expireTime;
 }

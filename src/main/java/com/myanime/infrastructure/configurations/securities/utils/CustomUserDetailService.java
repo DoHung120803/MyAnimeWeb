@@ -2,7 +2,7 @@ package com.myanime.infrastructure.configurations.securities.utils;
 
 import com.myanime.domain.models.PermissionModel;
 import com.myanime.domain.models.RoleModel;
-import com.myanime.domain.models.UserModel;
+import com.myanime.domain.models.UserDetailModel;
 import com.myanime.domain.port.output.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,8 +22,10 @@ public class CustomUserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public CustomUserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        UserModel userModel = userRepository.findByIdWithRoles(id).orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng"));
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserDetailModel userModel = userRepository.findByUsernameWithRoles(username).orElseThrow(
+                () -> new UsernameNotFoundException("Không tìm thấy người dùng")
+        );
 
         return CustomUserDetails.builder()
                 .id(userModel.getId())
@@ -31,11 +33,12 @@ public class CustomUserDetailService implements UserDetailsService {
                 .email(userModel.getEmail())
                 .firstName(userModel.getFirstName())
                 .lastName(userModel.getLastName())
+                .password(userModel.getPassword())
                 .authorities(buildAuthorities(userModel))
                 .build();
     }
 
-    private List<GrantedAuthority> buildAuthorities(UserModel user) {
+    private List<GrantedAuthority> buildAuthorities(UserDetailModel user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         List<RoleModel> roles = user.getRoles();

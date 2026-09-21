@@ -1,11 +1,13 @@
 package com.myanime.infrastructure.cache;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Component
 @Setter
 public class CacheComponent<K, V> {
@@ -19,10 +21,19 @@ public class CacheComponent<K, V> {
     }
 
     public V get(String key) {
-        return redisTemplate.opsForValue().get(key);
+        try {
+            return redisTemplate.opsForValue().get(key);
+        } catch (Exception e) {
+            log.error("Error getting value from cache for key {}: {}", key, e.getMessage());
+            return null;
+        }
     }
 
     public void set(K key, V value, long timeout, TimeUnit timeUnit) {
-        redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+        try {
+            redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+        } catch (Exception e) {
+            log.error("Error setting value in cache for key {}: {}", key, e.getMessage());
+        }
     }
 }

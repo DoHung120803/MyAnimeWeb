@@ -45,8 +45,8 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
                         throw new IllegalArgumentException("Invalid JWT token in WebSocket connection");
                     }
 
-                    String userId = jwtUtil.extractUserId(token);
-                    CustomUserDetails userDetail = userDetailService.loadUserByUsername(userId);
+                    String username = jwtUtil.extractUsername(token);
+                    CustomUserDetails userDetail = userDetailService.loadUserByUsername(username);
 
                     if (userDetail == null) {
                         throw new IllegalArgumentException("User not found for WebSocket connection");

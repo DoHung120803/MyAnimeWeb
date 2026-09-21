@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.myanime.common.constants.GlobalConstant;
 import com.myanime.common.utils.JsonUtil;
 import com.myanime.common.utils.ModelMapperUtil;
+import com.myanime.domain.models.UserDetailModel;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.output.UserRepository;
 import com.myanime.infrastructure.jparepos.UserJpaRepository;
@@ -109,6 +110,14 @@ public class UserAdapter implements UserRepository {
 
         return userJpaRepository.findByIdWithRoles(id)
                 .map(user -> ModelMapperUtil.mapper(user, UserModel.class));
+    }
+
+    @Override
+    public Optional<UserDetailModel> findByUsernameWithRoles(String username) {
+        if (!StringUtils.hasText(username)) return Optional.empty();
+
+        return userJpaRepository.findByUsernameWithRoles(username)
+                .map(user -> ModelMapperUtil.mapper(user, UserDetailModel.class));
     }
 
     private Page<UserModel> searchByES(String keyword, Pageable pageable) throws IOException {
