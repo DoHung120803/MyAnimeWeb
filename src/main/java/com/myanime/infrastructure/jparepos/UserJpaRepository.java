@@ -13,7 +13,9 @@ import java.util.Optional;
 
 public interface UserJpaRepository extends JpaRepository<User, String> {
     boolean existsByUsername(String username);
+
     Optional<User> findByUsername(String username);
+
     long countByIdIn(List<String> ids);
 
     @Query("SELECT u.id as id, u.avtUrl as avtUrl, u.firstName as firstName, u.lastName as lastName FROM User u WHERE u.id IN :userIds")
@@ -31,12 +33,21 @@ public interface UserJpaRepository extends JpaRepository<User, String> {
             """)
     Page<ConversationUserInfoProjection> searchUser(@Param("keyword") String keyword, Pageable pageable);
 
-        @Query("""
-                SELECT u
-                       FROM User u
-                       LEFT JOIN FETCH u.roles r
-                       LEFT JOIN FETCH r.permissions
-                       WHERE u.id = :id
-                """)
-        Optional<User> findByIdWithRoles(@Param("id") String id);
+    @Query("""
+            SELECT u
+                   FROM User u
+                   LEFT JOIN FETCH u.roles r
+                   LEFT JOIN FETCH r.permissions
+                   WHERE u.id = :id
+            """)
+    Optional<User> findByIdWithRoles(@Param("id") String id);
+
+    @Query("""
+            SELECT u
+                   FROM User u
+                   LEFT JOIN FETCH u.roles r
+                   LEFT JOIN FETCH r.permissions
+                   WHERE u.username = :username
+            """)
+    Optional<User> findByUsernameWithRoles(@Param("username") String username);
 }

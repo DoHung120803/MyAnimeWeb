@@ -52,6 +52,10 @@ admin:
 
 jwt:
   signerKey: ${JWT_SIGNER_KEY}
+  expiration: ${JWT_EXPIRATION:86400}
+  refresh-token:
+    expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800}
+
 
 elasticsearch:
   host: ${ELASTICSEARCH_HOST}
