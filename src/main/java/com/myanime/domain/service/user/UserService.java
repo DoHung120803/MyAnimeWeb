@@ -11,6 +11,7 @@ import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.input.UserUC;
 import com.myanime.domain.port.output.UserRepository;
+import com.myanime.infrastructure.configurations.securities.utils.AuthUtil;
 import com.myanime.infrastructure.entities.Role;
 import com.myanime.infrastructure.entities.User;
 import com.myanime.infrastructure.jparepos.RoleRepository;
@@ -99,8 +100,7 @@ public class UserService implements UserUC {
     }
 
     public UserResponse getMyInfo() {
-        var context = SecurityContextHolder.getContext();
-        String userId = context.getAuthentication().getName();
+        String userId = AuthUtil.getCurrentUserId();
 
         User user = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));

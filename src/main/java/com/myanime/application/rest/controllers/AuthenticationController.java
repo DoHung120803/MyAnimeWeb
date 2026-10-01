@@ -2,6 +2,7 @@ package com.myanime.application.rest.controllers;
 
 import com.myanime.application.rest.requests.authen.AuthenticationRequest;
 import com.myanime.application.rest.requests.authen.IntrospectRequest;
+import com.myanime.application.rest.requests.authen.OAuth2ExchangeRequest;
 import com.myanime.application.rest.requests.authen.RefreshTokenRequest;
 import com.myanime.application.rest.responses.ApiResponse;
 import com.myanime.application.rest.responses.AuthenticationResponse;
@@ -9,6 +10,7 @@ import com.myanime.application.rest.responses.IntrospectResponse;
 import com.myanime.application.rest.responses.ResponseFactory;
 import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.domain.exceptions.LoginException;
+import com.myanime.domain.exceptions.OAuth2Exception;
 import com.myanime.domain.service.auth.AuthenticationServiceInterface;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -51,6 +53,16 @@ public class AuthenticationController {
         return ApiResponse.<AuthenticationResponse>builder()
                 .data(authenticationService.refreshToken(request))
                 .build();
+    }
+
+    @PostMapping("/oauth2/exchange")
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> exchange(@Valid @RequestBody OAuth2ExchangeRequest request) {
+        try {
+            AuthenticationResponse result = authenticationService.exchange(request);
+            return ResponseFactory.success(result);
+        } catch (OAuth2Exception e) {
+            return ResponseFactory.error(HttpStatus.UNAUTHORIZED, e.getMessage(), null);
+        }
     }
 }
 

@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends SyncableRepository<UserModel> {
+    UserModel save(UserModel userModel);
     long countByIdIn(List<String> ids);
     boolean existsById(String id);
+    boolean existsByUsername(String username);
     Optional<UserModel> findById(String id);
     List<UserModel> findAllByIds(List<String> ids);
     List<UserModel> getConversationUserInfo(List<String> userIds);
@@ -18,4 +20,5 @@ public interface UserRepository extends SyncableRepository<UserModel> {
     Page<UserModel> search(String keyword, Pageable pageable);
     Optional<UserModel> findByIdWithRoles(String id);
     Optional<UserDetailModel> findByUsernameWithRoles(String username);
+    Optional<UserModel> findByEmail(String email);
 }

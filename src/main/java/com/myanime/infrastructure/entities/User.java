@@ -27,6 +27,7 @@ public class User {
     LocalDateTime updatedAt;
     String email;
     String avtUrl;
+    String displayName;
 
     @ManyToMany
     Set<Role> roles;

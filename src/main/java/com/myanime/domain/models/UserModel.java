@@ -18,6 +18,8 @@ public class UserModel {
 
     private String lastName;
 
+    private String displayName;
+
     private LocalDate dob;
 
     private String email;

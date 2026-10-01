@@ -1,5 +1,8 @@
 package com.myanime.infrastructure.configurations.securities;
 
+import com.myanime.domain.service.auth.oauth2.CustomOAuth2UserService;
+import com.myanime.domain.service.auth.oauth2.CustomOidcUserService;
+import com.myanime.domain.service.auth.oauth2.OAuth2SuccessHandler;
 import com.myanime.infrastructure.configurations.securities.filters.JwtAuthenticationFilter;
 import com.myanime.infrastructure.configurations.securities.utils.CustomAccessDeniedHandler;
 import com.myanime.infrastructure.configurations.securities.utils.CustomAuthenticationEntryPoint;
@@ -35,6 +38,7 @@ public class SecurityConfig {
             "/api/v1/auth/login",
             "/api/v1/auth/introspect",
             "/api/v1/auth/refresh-token",
+            "/api/v1/auth/oauth2/exchange",
             "/api/v1/animes/top-animes",
             "/api/v1/animes",
             "/api/v1/animes/search",
@@ -45,11 +49,15 @@ public class SecurityConfig {
             "/ws/**",
             "/api/v1/users/get-all",
             "/api/v1/users/search",
-            "/api/v1/banners"
+            "/api/v1/banners",
+            "/oauth2/**",
     };
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final CustomOidcUserService customOidcUserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -61,6 +69,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .userInfoEndpoint(
+                                userInfo -> userInfo
+                                        .userService(customOAuth2UserService)
+                                        .oidcUserService(customOidcUserService)
+                        )
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(customAccessDeniedHandler)

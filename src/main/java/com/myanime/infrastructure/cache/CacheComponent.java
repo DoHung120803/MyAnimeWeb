@@ -20,11 +20,20 @@ public class CacheComponent<K, V> {
         this.redisTemplate = redisTemplate;
     }
 
-    public V get(String key) {
+    public V get(K key) {
         try {
             return redisTemplate.opsForValue().get(key);
         } catch (Exception e) {
-            log.error("Error getting value from cache for key {}: {}", key, e.getMessage());
+            log.error(">>> Error getting value from cache for key {}: {}", key, e.getMessage());
+            return null;
+        }
+    }
+
+    public V getAndDelete(K key) {
+        try {
+            return redisTemplate.opsForValue().getAndDelete(key);
+        } catch (Exception e) {
+            log.error(">>> Error getting and deleting value from cache for key {}: {}", key, e.getMessage());
             return null;
         }
     }
