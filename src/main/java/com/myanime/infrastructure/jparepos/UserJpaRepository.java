@@ -50,4 +50,6 @@ public interface UserJpaRepository extends JpaRepository<User, String> {
                    WHERE u.username = :username
             """)
     Optional<User> findByUsernameWithRoles(@Param("username") String username);
+
+    Optional<User> findByEmail(String email);
 }

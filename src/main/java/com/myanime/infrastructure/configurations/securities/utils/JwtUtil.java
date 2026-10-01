@@ -34,21 +34,21 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(signerKey.getBytes());
     }
 
-    public JwtDTO generateToken(String userId) {
-        return generateToken(userId, null, expiration);
+    public JwtDTO generateToken(String username) {
+        return generateToken(username, null, expiration);
     }
 
-    public String generateRefreshToken(String userId) {
-        return buildToken(userId, null, refreshTokenExpiration);
+    public String generateRefreshToken(String username) {
+        return buildToken(username, null, refreshTokenExpiration);
     }
 
-    public JwtDTO generateToken(String userId, Map<String, Object> extraClaims, long expiration) {
-        String token = buildToken(userId, extraClaims, expiration);
+    public JwtDTO generateToken(String username, Map<String, Object> extraClaims, long expiration) {
+        String token = buildToken(username, extraClaims, expiration);
         Date expireAt = new Date(System.currentTimeMillis() + expiration * 1000L);
 
         JwtDTO jwtDTO = new JwtDTO();
         jwtDTO.setJwt(token);
-        jwtDTO.setRefreshToken(generateRefreshToken(userId));
+        jwtDTO.setRefreshToken(generateRefreshToken(username));
         jwtDTO.setExpireAt(expireAt.toInstant().atZone(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime());
         jwtDTO.setExpireTime(expiration);
 
@@ -76,11 +76,11 @@ public class JwtUtil {
                 .getBody();
     }
 
-    private String buildToken(String userId, Map<String, Object> extraClaims, long expiration) {
+    private String buildToken(String username, Map<String, Object> extraClaims, long expiration) {
         Date expireAt = new Date(System.currentTimeMillis() + expiration * 1000L); // expiration in seconds
 
         var builder = Jwts.builder()
-                .setSubject(userId)
+                .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expireAt);
 

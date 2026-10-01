@@ -21,4 +21,10 @@ public class GlobalConstant {
         public static final String ANIMES = "animes";
         public static final String USERS = "users";
     }
+
+    public static class TimeZone {
+        private TimeZone() {}
+
+        public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
+    }
 }

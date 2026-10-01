@@ -2,12 +2,16 @@ package com.myanime.domain.service.auth;
 
 import com.myanime.application.rest.requests.authen.AuthenticationRequest;
 import com.myanime.application.rest.requests.authen.IntrospectRequest;
+import com.myanime.application.rest.requests.authen.OAuth2ExchangeRequest;
 import com.myanime.application.rest.requests.authen.RefreshTokenRequest;
 import com.myanime.application.rest.responses.AuthenticationResponse;
 import com.myanime.application.rest.responses.IntrospectResponse;
 import com.myanime.common.exceptions.BadRequestException;
 import com.myanime.domain.dtos.JwtDTO;
 import com.myanime.domain.exceptions.LoginException;
+import com.myanime.domain.exceptions.OAuth2Exception;
+import com.myanime.domain.port.output.UserRepository;
+import com.myanime.domain.service.auth.oauth2.OAuth2AuthorizationCodeService;
 import com.myanime.infrastructure.configurations.securities.utils.CustomUserDetailService;
 import com.myanime.infrastructure.configurations.securities.utils.CustomUserDetails;
 import com.myanime.infrastructure.configurations.securities.utils.JwtUtil;
@@ -28,6 +32,8 @@ public class AuthenticationService implements AuthenticationServiceInterface {
     AuthenticationManager authenticationManager;
     JwtUtil jwtUtil;
     CustomUserDetailService customUserDetailService;
+    OAuth2AuthorizationCodeService oAuth2AuthorizationCodeService;
+    UserRepository userRepository;
 
     public IntrospectResponse introspect(IntrospectRequest request) {
         boolean valid = jwtUtil.validateToken(request.getToken());
@@ -74,6 +80,26 @@ public class AuthenticationService implements AuthenticationServiceInterface {
 
         if (userDetails == null || !username.equals(userDetails.getUsername())) {
             throw new BadRequestException("Người dùng không tồn tại");
+        }
+
+        JwtDTO jwtDTO = jwtUtil.generateToken(username);
+
+        return AuthenticationResponse.builder()
+                .token(jwtDTO.getJwt())
+                .refreshToken(jwtDTO.getRefreshToken())
+                .authenticated(true)
+                .expireTime(jwtDTO.getExpireTime())
+                .expireAt(jwtDTO.getExpireAt())
+                .build();
+    }
+
+    @Override
+    public AuthenticationResponse exchange(OAuth2ExchangeRequest request) throws OAuth2Exception {
+        String code = request.getCode();
+        String username = oAuth2AuthorizationCodeService.consumeCode(code);
+
+        if (!userRepository.existsByUsername(username)) {
+            throw new OAuth2Exception("Người dùng không tồn tại");
         }
 
         JwtDTO jwtDTO = jwtUtil.generateToken(username);

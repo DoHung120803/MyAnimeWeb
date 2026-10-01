@@ -7,6 +7,7 @@ import com.myanime.common.utils.ModelMapperUtil;
 import com.myanime.domain.models.UserDetailModel;
 import com.myanime.domain.models.UserModel;
 import com.myanime.domain.port.output.UserRepository;
+import com.myanime.infrastructure.entities.User;
 import com.myanime.infrastructure.jparepos.UserJpaRepository;
 import com.myanime.infrastructure.projections.ConversationUserInfoProjection;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,16 @@ public class UserAdapter implements UserRepository {
     private final RestHighLevelClient restHighLevelClient;
 
     @Override
+    public UserModel save(UserModel userModel) {
+        if (userModel == null) return null;
+
+        return ModelMapperUtil.mapper(
+                userJpaRepository.save(ModelMapperUtil.mapper(userModel, User.class)),
+                UserModel.class
+        );
+    }
+
+    @Override
     public long countByIdIn(List<String> ids) {
         if (CollectionUtils.isEmpty(ids)) return 0;
 
@@ -52,6 +63,13 @@ public class UserAdapter implements UserRepository {
         if (!StringUtils.hasText(id)) return false;
 
         return userJpaRepository.existsById(id);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        if (!StringUtils.hasText(username)) return false;
+
+        return userJpaRepository.existsByUsername(username);
     }
 
     @Override
@@ -118,6 +136,14 @@ public class UserAdapter implements UserRepository {
 
         return userJpaRepository.findByUsernameWithRoles(username)
                 .map(user -> ModelMapperUtil.mapper(user, UserDetailModel.class));
+    }
+
+    @Override
+    public Optional<UserModel> findByEmail(String email) {
+        if (!StringUtils.hasText(email)) return Optional.empty();
+
+        return userJpaRepository.findByEmail(email)
+                .map(user -> ModelMapperUtil.mapper(user, UserModel.class));
     }
 
     private Page<UserModel> searchByES(String keyword, Pageable pageable) throws IOException {
