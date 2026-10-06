@@ -51,6 +51,7 @@ public class SecurityConfig {
             "/api/v1/users/search",
             "/api/v1/banners",
             "/oauth2/**",
+            "/api/v1/ani-tube/embedded"
     };
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
